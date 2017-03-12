@@ -1,20 +1,19 @@
 package com.gaoyy.necromreader.main;
 
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.base.BaseActivity;
+import com.gaoyy.necromreader.util.ActivityUtils;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private DrawerLayout mainDrawerLayout;
     private NavigationView mainNavView;
-    private Toolbar mainToolbar;
 
 
     @Override
@@ -29,13 +28,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.assignViews();
         mainDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
         mainNavView = (NavigationView) findViewById(R.id.main_nav_view);
-        mainToolbar = (Toolbar)findViewById(R.id.main_toolbar);
-    }
-
-    @Override
-    protected void initToolbar()
-    {
-        setSupportActionBar(mainToolbar);
     }
 
     @Override
@@ -43,12 +35,36 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     {
         super.configViews();
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mainDrawerLayout, mainToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mainDrawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
-
         mainNavView.setNavigationItemSelectedListener(this);
+
+        showDefaultFragment();
+    }
+
+    /**
+     * 显示默认的Fragment
+     */
+    private void showDefaultFragment()
+    {
+        HomeFragment homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.main_content);
+        int[] newsType = {R.string.top, R.string.shehui, R.string.guonei, R.string.guoji,
+                R.string.yule, R.string.tiyu, R.string.junshi, R.string.keji, R.string.caijing, R.string.shishang};
+        if (homeFragment == null)
+        {
+            homeFragment = HomeFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putInt("titleId", R.string.app_name);
+            bundle.putIntArray("newsType", newsType);
+            homeFragment.setArguments(bundle);
+            /**
+             * 由于是BaseFragment是懒加载，add HomeFragment之前isVisibleToUser为false
+             * 所以HomeFragment的UI没有渲染出来，这里需要手动设置为true，
+             * 告诉LazyFragment HomeFragment是可见的
+             */
+            homeFragment.setUserVisibleHint(true);
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), homeFragment, R.id.main_content);
+        }
+        //初始化MainPresenter
+        new MainPresenter(homeFragment);
     }
 
     @Override
@@ -70,30 +86,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera)
+        switch (id)
         {
-            // Handle the camera action
+            case R.id.nav_news:
+                int[] newsType = {R.string.top, R.string.shehui, R.string.guonei, R.string.guoji,
+                        R.string.yule, R.string.tiyu, R.string.junshi, R.string.keji, R.string.caijing, R.string.shishang};
+                break;
         }
-        else if (id == R.id.nav_gallery)
-        {
 
-        }
-        else if (id == R.id.nav_slideshow)
-        {
-
-        }
-        else if (id == R.id.nav_manage)
-        {
-
-        }
-        else if (id == R.id.nav_share)
-        {
-
-        }
-        else if (id == R.id.nav_send)
-        {
-
-        }
 
         mainDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
