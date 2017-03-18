@@ -18,6 +18,7 @@ public abstract class BaseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         //加载布局
         initContentView();
         //初始化view

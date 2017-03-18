@@ -1,10 +1,14 @@
 package com.gaoyy.necromreader.adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -71,7 +75,17 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .into(newsViewHolder.itemNewsImg);
 
         newsViewHolder.itemNewsLayout.setTag(news);
+        int screenWidth = ((AppCompatActivity)context).getWindowManager().getDefaultDisplay().getWidth();
+        newsViewHolder.itemNewsLayout.setTranslationX(screenWidth/2);
+        ObjectAnimator xAnim= ObjectAnimator.ofFloat(newsViewHolder.itemNewsLayout, "TranslationX",screenWidth/2,0).
+                setDuration(500);
+        ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(newsViewHolder.itemNewsLayout, "Alpha", 0.5f, 1.0f).
+                setDuration(500);
 
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(xAnim, alphaAnim);
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.start();
 
         if (onItemClickListener != null)
         {

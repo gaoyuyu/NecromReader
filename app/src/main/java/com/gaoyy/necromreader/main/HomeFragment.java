@@ -94,6 +94,7 @@ public class HomeFragment extends BaseFragment implements MainContract.View
 
         newsPagerAdapter = new NewsPagerAdapter(activity,activity.getSupportFragmentManager(), newsType, fragmentList);
         homeViewpager.setAdapter(newsPagerAdapter);
+        homeViewpager.setOffscreenPageLimit(1);
         homeTablayout.setBackgroundColor(getResources().getColor(android.R.color.white));
         homeTablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         homeTablayout.setupWithViewPager(homeViewpager);

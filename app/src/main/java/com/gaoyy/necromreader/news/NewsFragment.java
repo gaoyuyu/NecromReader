@@ -112,7 +112,6 @@ public class NewsFragment extends BaseFragment implements NewsContract.View, New
     public void showNews(List<NewsInfo.ResultBean.DataBean> list)
     {
         newsListAdapter.updateData(list);
-        this.list = list;
     }
 
     @Override
