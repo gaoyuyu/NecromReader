@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
              * 所以HomeFragment的UI没有渲染出来，这里需要手动设置为true，
              * 告诉LazyFragment HomeFragment是可见的
              */
-            homeFragment.setUserVisibleHint(true);
+//            homeFragment.setUserVisibleHint(true);
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), homeFragment, R.id.main_content);
         }
         //初始化MainPresenter

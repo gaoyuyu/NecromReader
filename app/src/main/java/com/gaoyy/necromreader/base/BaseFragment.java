@@ -59,9 +59,6 @@ public abstract class BaseFragment extends LazyFragment
     {
         if (!isPrepared || !isVisible)
         {
-            Log.e(LOG_TAG,"==return===");
-            Log.e(LOG_TAG,"==isPrepared==="+isPrepared);
-            Log.e(LOG_TAG,"==isVisible==="+isVisible);
             return;
         }
         assignViews(rootView);
@@ -89,7 +86,7 @@ public abstract class BaseFragment extends LazyFragment
 
     protected void configViews()
     {
-
+        Log.e(LOG_TAG,"===configViews===");
     }
 
     /**

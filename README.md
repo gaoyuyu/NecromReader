@@ -42,15 +42,22 @@
 ```
 
 ```Java
-if(isAdded())
-{
-    map.put("type",activity.getResources().getString(getArguments().getInt("type")));
-    map.put("key", Constant.APPKEY);
-    mNewsPresenter.loadNewsData(map);
-}
+    if(isAdded())
+    {
+        map.put("type",activity.getResources().getString(getArguments().getInt("type")));
+        map.put("key", Constant.APPKEY);
+        mNewsPresenter.loadNewsData(map);
+    }
 ```
 
+##2017.3.18
 
+***[update]***
+ 1. 新闻详情页
+
+
+***[fix]***
+ 1. 由于BaseFragment继承自LazyFragment，正常在add之后需要setUserVisibleHint(true)，否则lazyload的if判断过不去，所以在ActivityUtils中做统一设置。
 
 
 

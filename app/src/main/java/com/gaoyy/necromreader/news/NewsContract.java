@@ -1,7 +1,6 @@
 package com.gaoyy.necromreader.news;
 
 import android.content.Context;
-import android.support.v4.app.ActivityOptionsCompat;
 
 import com.gaoyy.necromreader.api.bean.NewsInfo;
 import com.gaoyy.necromreader.base.BasePresenter;
@@ -33,7 +32,7 @@ public class NewsContract
     {
         void loadNewsData(Map<String, String> map);
 
-        void onItemClick(Context context, NewsInfo.ResultBean.DataBean news, ActivityOptionsCompat options);
+        void onItemClick(Context context, NewsInfo.ResultBean.DataBean news);
 
     }
 }

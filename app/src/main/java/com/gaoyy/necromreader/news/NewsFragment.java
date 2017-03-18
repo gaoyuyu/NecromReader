@@ -132,9 +132,10 @@ public class NewsFragment extends BaseFragment implements NewsContract.View, New
     }
 
     @Override
-    public void onItemClick(View view, int position)
+    public void onItemClick(View view, int ition)
     {
-
+        NewsInfo.ResultBean.DataBean news = (NewsInfo.ResultBean.DataBean)view.getTag();
+        mNewsPresenter.onItemClick(activity,news);
     }
 
     @Override

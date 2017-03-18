@@ -1,11 +1,11 @@
 package com.gaoyy.necromreader.news;
 
 import android.content.Context;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.util.Log;
+import android.content.Intent;
 
 import com.gaoyy.necromreader.api.RetrofitService;
 import com.gaoyy.necromreader.api.bean.NewsInfo;
+import com.gaoyy.necromreader.newsdetail.NewsDetailActivity;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,6 @@ public class NewsPresenter implements NewsContract.Presenter
                 mNewsView.finishRefresh();
                 if (response.isSuccessful() && response.body() != null)
                 {
-                    Log.e(LOG_TAG, response.body().getResult().getData().toString());
                     List<NewsInfo.ResultBean.DataBean> list = response.body().getResult().getData();
                     mNewsView.showNews(list);
                 }
@@ -58,9 +57,13 @@ public class NewsPresenter implements NewsContract.Presenter
     }
 
     @Override
-    public void onItemClick(Context context, NewsInfo.ResultBean.DataBean news, ActivityOptionsCompat options)
+    public void onItemClick(Context context, NewsInfo.ResultBean.DataBean news)
     {
-
+        Intent intent = new Intent();
+        intent.putExtra("title",news.getTitle());
+        intent.putExtra("url",news.getUrl());
+        intent.setClass(context, NewsDetailActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
