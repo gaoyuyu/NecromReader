@@ -26,7 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity
         //初始化toolbar
         initToolbar();
         //配置views
-        configViews();
+        configViews(savedInstanceState);
     }
 
 
@@ -42,7 +42,7 @@ public abstract class BaseActivity extends AppCompatActivity
 
     }
 
-    protected void configViews()
+    protected void configViews(Bundle savedInstanceState)
     {
 
     }

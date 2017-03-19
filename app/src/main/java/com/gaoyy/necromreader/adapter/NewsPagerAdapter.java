@@ -6,17 +6,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.gaoyy.necromreader.R;
-import com.gaoyy.necromreader.news.NewsFragment;
 
 import java.util.List;
 
 public class NewsPagerAdapter extends FragmentStatePagerAdapter
 {
     private int[] newsType;
-    private List<NewsFragment> fragmentList;
+    private List<Fragment> fragmentList;
     private Context context;
-
-    public NewsPagerAdapter(Context context, FragmentManager fm, int[] newsType, List<NewsFragment> fragmentList)
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+    public NewsPagerAdapter(Context context, FragmentManager fm, int[] newsType, List<Fragment> fragmentList)
     {
         super(fm);
         this.context = context;
@@ -76,6 +77,12 @@ public class NewsPagerAdapter extends FragmentStatePagerAdapter
                 break;
             case R.string.shishang:
                 typeName = "时尚";
+                break;
+            case R.string.photo:
+                typeName="美女";
+                break;
+            case R.string.android:
+                typeName="Android";
                 break;
         }
         return typeName;

@@ -38,9 +38,9 @@ public class NewsDetailActivity extends BaseActivity
     }
 
     @Override
-    protected void configViews()
+    protected void configViews(Bundle savedInstanceState)
     {
-        super.configViews();
+        super.configViews(savedInstanceState);
         NewsDetailFragment newsDetailFragment = (NewsDetailFragment) getSupportFragmentManager().findFragmentById(R.id.news_detail_content);
         if (newsDetailFragment == null)
         {
