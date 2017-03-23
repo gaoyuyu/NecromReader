@@ -13,6 +13,8 @@ import android.view.View;
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.NewsPagerAdapter;
 import com.gaoyy.necromreader.base.BaseFragment;
+import com.gaoyy.necromreader.gankio.photo.PhotoFragment;
+import com.gaoyy.necromreader.gankio.photo.PhotoPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,12 +90,13 @@ public class GankFragment extends BaseFragment implements GankContract.View
         {
             Bundle bundle = new Bundle();
             PhotoFragment fragment = new PhotoFragment();
+            new PhotoPresenter(fragment);
             bundle.putInt("type",tabType[i]);
             fragment.setArguments(bundle);
             fragmentList.add(i, fragment);
         }
 
-        newsPagerAdapter = new NewsPagerAdapter(activity,activity.getSupportFragmentManager(), tabType, fragmentList);
+        newsPagerAdapter = new NewsPagerAdapter(activity, getChildFragmentManager(), tabType, fragmentList);
         gankViewpager.setAdapter(newsPagerAdapter);
         gankViewpager.setOffscreenPageLimit(1);
         gankTablayout.setBackgroundColor(getResources().getColor(android.R.color.white));

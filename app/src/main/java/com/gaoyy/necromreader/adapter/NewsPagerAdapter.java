@@ -79,7 +79,7 @@ public class NewsPagerAdapter extends FragmentStatePagerAdapter
                 typeName = "时尚";
                 break;
             case R.string.photo:
-                typeName="美女";
+                typeName="福利";
                 break;
             case R.string.android:
                 typeName="Android";

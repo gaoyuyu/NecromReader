@@ -71,7 +71,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .load(news.getThumbnail_pic_s())
                 .placeholder(R.mipmap.loading_bg)
                 .error(R.mipmap.error_bg)
-                .fit()
                 .into(newsViewHolder.itemNewsImg);
 
         newsViewHolder.itemNewsLayout.setTag(news);

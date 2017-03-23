@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.gaoyy.necromreader.R;
@@ -55,7 +54,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      */
     private void showDefaultFragment(Bundle savedInstanceState)
     {
-        HomeFragment homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.main_content);
         int[] newsType = {R.string.top, R.string.shehui, R.string.guonei, R.string.guoji,
                 R.string.yule, R.string.tiyu, R.string.junshi, R.string.keji, R.string.caijing, R.string.shishang};
         if (savedInstanceState == null)
@@ -92,7 +90,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             //添加渐隐渐现的动画
             FragmentTransaction ft = fm.beginTransaction();
 //            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            Log.i("MainAty","===>"+to.isAdded());
             if (!to.isAdded())
             {    // 先判断是否被add过
                 ft.hide(from).add(R.id.main_content, to).commit(); // 隐藏当前的fragment，add下一个到Activity中

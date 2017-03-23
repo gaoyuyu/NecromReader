@@ -39,12 +39,13 @@ public class NewsPresenter implements NewsContract.Presenter
             @Override
             public void onResponse(Call<NewsInfo> call, Response<NewsInfo> response)
             {
-                mNewsView.hideLoading();
-                mNewsView.finishRefresh();
                 if (!mNewsView.isActive())
                 {
                     return;
                 }
+                mNewsView.hideLoading();
+                mNewsView.finishRefresh();
+
                 if (response.isSuccessful() && response.body() != null)
                 {
                     List<NewsInfo.ResultBean.DataBean> list = response.body().getResult().getData();
@@ -56,12 +57,12 @@ public class NewsPresenter implements NewsContract.Presenter
             @Override
             public void onFailure(Call<NewsInfo> call, Throwable t)
             {
-                mNewsView.hideLoading();
-                mNewsView.finishRefresh();
                 if (!mNewsView.isActive())
                 {
                     return;
                 }
+                mNewsView.hideLoading();
+                mNewsView.finishRefresh();
             }
         });
     }

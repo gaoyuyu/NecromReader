@@ -17,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitService
 {
     public static NewsApi sNewsService;
+    public static GankApi sGankService;
     private RetrofitService()
     {
         throw new AssertionError();
@@ -38,13 +39,21 @@ public class RetrofitService
                 .readTimeout(2000000, TimeUnit.MILLISECONDS)
                 .build();
 
-        Retrofit retrofit = new Retrofit.Builder()
+        Retrofit newsRetrofit = new Retrofit.Builder()
                 .baseUrl(Constant.URL_NEWS_BASE)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        sNewsService = retrofit.create(NewsApi.class);
+        sNewsService = newsRetrofit.create(NewsApi.class);
+
+
+        Retrofit gankRetrofit = new Retrofit.Builder()
+                .baseUrl(Constant.URL_GANK_PHOTO_BASE)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        sGankService = gankRetrofit.create(GankApi.class);
 
     }
 }

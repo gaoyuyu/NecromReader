@@ -63,6 +63,8 @@ public abstract class BaseFragment extends LazyFragment
         assignViews(rootView);
         initToolbar();
         configViews();
+
+        setListener();
     }
 
     /**
@@ -84,6 +86,10 @@ public abstract class BaseFragment extends LazyFragment
     }
 
     protected void configViews()
+    {
+    }
+
+    protected void setListener()
     {
     }
 

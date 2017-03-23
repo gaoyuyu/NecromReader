@@ -61,4 +61,47 @@
  1. 由于BaseFragment继承自LazyFragment，正常在add之后需要setUserVisibleHint(true)，否则lazyload的if判断过不去，所以在ActivityUtils中做统一设置。
 
 
+##2017.3.19
+
+***[update]***
+ 1. 新增GankFragment
+
+
+***[fix]***
+ 1. style-v21中设置`<item name="android:windowDrawsSystemBarBackgrounds">true</item>`和`<item name="android:statusBarColor">@android:color/transparent</item>`，NavigationView上状态栏效果为透明且不被状态栏截断。
+ 2. NavigationView中点击item通过`switchContent()`来回切换Fragment，出现`FragmentManager is already executing transactions`异常，由于HomeFragment中存在Viewpager，且Viewpager的Item同样是Fragemnt，所以FragmentManager要使用`getChildFragmentManager`获取
+```Java
+    /**
+     * 当fragment进行切换时，采用隐藏与显示的方法加载fragment以防止数据的重复加载
+     *
+     * @param from
+     * @param to
+     */
+    public void switchContent(Fragment from, Fragment to)
+    {
+        if (currentFragment != to)
+        {
+            currentFragment = to;
+            FragmentManager fm = getSupportFragmentManager();
+            //添加渐隐渐现的动画
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            Log.i("MainAty","===>"+to.isAdded());
+            if (!to.isAdded())
+            {    // 先判断是否被add过
+                ft.hide(from).add(R.id.main_content, to).commit(); // 隐藏当前的fragment，add下一个到Activity中
+            }
+            else
+            {
+                ft.hide(from).show(to).commit(); // 隐藏当前的fragment，显示下一个
+            }
+        }
+    }
+```
+```Java
+        newsPagerAdapter = new NewsPagerAdapter(activity, getChildFragmentManager(), tabType, fragmentList);
+        homeViewpager.setAdapter(newsPagerAdapter);
+```
+
+
 
