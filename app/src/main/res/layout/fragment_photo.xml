@@ -9,7 +9,7 @@
         android:id="@+id/photo_swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         >
 
         <android.support.v7.widget.RecyclerView
@@ -26,6 +26,7 @@
         android:id="@+id/photo_progressBar"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:visibility="gone"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
 

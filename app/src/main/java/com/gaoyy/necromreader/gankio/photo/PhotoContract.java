@@ -1,5 +1,7 @@
 package com.gaoyy.necromreader.gankio.photo;
 
+import android.content.Context;
+
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
 import com.gaoyy.necromreader.base.BasePresenter;
 import com.gaoyy.necromreader.base.BaseView;
@@ -35,5 +37,8 @@ public class PhotoContract
          * @param pageNum 当前页数
          */
         void loadPhotoData(int pageNum);
+
+
+        void onItemClick(Context context, PhotoInfo.ResultsBean resultsBean);
     }
 }

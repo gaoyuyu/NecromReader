@@ -3,9 +3,9 @@ package com.gaoyy.necromreader.gankio;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -74,7 +74,7 @@ public class GankFragment extends BaseFragment implements GankContract.View
     @Override
     protected void initToolbar()
     {
-        super.initToolbar(gankToolbar, title, true, -1);
+        super.initToolbar(gankToolbar, title, false, -1);
     }
 
     @Override
@@ -82,18 +82,15 @@ public class GankFragment extends BaseFragment implements GankContract.View
     {
         super.configViews();
         DrawerLayout drawer = (DrawerLayout) activity.findViewById(R.id.main_drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                activity, drawer, gankToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        gankToolbar.setNavigationIcon(R.drawable.ic_menu_bar);
         for (int i = 0; i < tabType.length; i++)
         {
             Bundle bundle = new Bundle();
-            PhotoFragment fragment = new PhotoFragment();
-            new PhotoPresenter(fragment);
+            PhotoFragment fragment = PhotoFragment.newInstance();
             bundle.putInt("type",tabType[i]);
             fragment.setArguments(bundle);
             fragmentList.add(i, fragment);
+            new PhotoPresenter(fragment);
         }
 
         newsPagerAdapter = new NewsPagerAdapter(activity, getChildFragmentManager(), tabType, fragmentList);
@@ -103,6 +100,29 @@ public class GankFragment extends BaseFragment implements GankContract.View
         gankTablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         gankTablayout.setupWithViewPager(gankViewpager);
         gankTablayout.setTabsFromPagerAdapter(newsPagerAdapter);
+    }
+
+    @Override
+    protected void setListener()
+    {
+        super.setListener();
+
+        gankToolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                DrawerLayout drawer = (DrawerLayout) activity.findViewById(R.id.main_drawer_layout);
+                if (drawer.isDrawerOpen(GravityCompat.START))
+                {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+                else
+                {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+        });
     }
 
     @Override

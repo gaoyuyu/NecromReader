@@ -1,10 +1,9 @@
 package com.gaoyy.necromreader.gankio.photo;
 
-import android.util.Log;
+import android.content.Context;
 
 import com.gaoyy.necromreader.api.RetrofitService;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
-import com.gaoyy.necromreader.news.NewsPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import retrofit2.Response;
 
 public class PhotoPresenter implements PhotoContract.Presenter
 {
-    private static final String LOG_TAG = NewsPresenter.class.getSimpleName();
+    private static final String LOG_TAG = PhotoPresenter.class.getSimpleName();
     private PhotoContract.View mPhotoView;
     private List<PhotoInfo.ResultsBean> photoList = new ArrayList<>();
     public PhotoPresenter(PhotoContract.View mPhotoView)
@@ -46,7 +45,6 @@ public class PhotoPresenter implements PhotoContract.Presenter
                 if (response.isSuccessful() && response.body() != null)
                 {
                     List<PhotoInfo.ResultsBean> list = response.body().getResults();
-                    Log.e(LOG_TAG,"photo size-->"+list.size());
                     photoList.addAll(list);
                     mPhotoView.showPhotoData(photoList);
                 }
@@ -63,6 +61,12 @@ public class PhotoPresenter implements PhotoContract.Presenter
                 mPhotoView.finishRefresh();
             }
         });
+    }
+
+    @Override
+    public void onItemClick(Context context, PhotoInfo.ResultsBean resultsBean)
+    {
+
     }
 
     @Override

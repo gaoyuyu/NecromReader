@@ -2,7 +2,6 @@ package com.gaoyy.necromreader.news;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.gaoyy.necromreader.api.RetrofitService;
 import com.gaoyy.necromreader.api.bean.NewsInfo;
@@ -49,7 +48,6 @@ public class NewsPresenter implements NewsContract.Presenter
                 if (response.isSuccessful() && response.body() != null)
                 {
                     List<NewsInfo.ResultBean.DataBean> list = response.body().getResult().getData();
-                    Log.e(LOG_TAG,list.toString());
                     mNewsView.showNews(list);
                 }
             }

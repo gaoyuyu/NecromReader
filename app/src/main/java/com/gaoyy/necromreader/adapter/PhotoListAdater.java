@@ -1,12 +1,12 @@
 package com.gaoyy.necromreader.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
@@ -24,7 +24,20 @@ public class PhotoListAdater extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private LayoutInflater inflater;
     private List<PhotoInfo.ResultsBean> list;
 
-    private int[] heights ={650,700} ;
+    private OnItemClickListener onItemClickListener;
+
+
+    public interface OnItemClickListener
+    {
+        void onItemClick(View view, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener)
+    {
+        this.onItemClickListener = listener;
+    }
+
+    private int[] heights = {650, 700};
 
     public PhotoListAdater(Context context, List<PhotoInfo.ResultsBean> list)
     {
@@ -38,19 +51,16 @@ public class PhotoListAdater extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View rootView = inflater.inflate(R.layout.item_photo, parent, false);
-        ItemViewHolder itemViewHolder = new ItemViewHolder(rootView);
-        return itemViewHolder;
+        PhotoViewHolder photoViewHolder = new PhotoViewHolder(rootView);
+        return photoViewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
-
-
-
+        PhotoViewHolder photoViewHolder = (PhotoViewHolder) holder;
         PhotoInfo.ResultsBean resultsBean = list.get(position);
-        ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        itemViewHolder.tv.setText(resultsBean.get_id());
+        photoViewHolder.itemPhotoCardview.setTag(resultsBean);
 
 //        ViewGroup.LayoutParams lp = itemViewHolder.img.getLayoutParams();
 //        if(position%3 > 1&&position%3 < 3)
@@ -70,7 +80,12 @@ public class PhotoListAdater extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .placeholder(R.mipmap.loading_bg)
                 .error(R.mipmap.error_bg)
                 .fit()
-                .into(itemViewHolder.img);
+                .into(photoViewHolder.itemPhotoImg);
+
+        if (onItemClickListener != null)
+        {
+            photoViewHolder.itemPhotoCardview.setOnClickListener(new BasicOnClickListener(photoViewHolder));
+        }
     }
 
     @Override
@@ -79,16 +94,16 @@ public class PhotoListAdater extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return list.size();
     }
 
-    public static class ItemViewHolder extends RecyclerView.ViewHolder
+    public static class PhotoViewHolder extends RecyclerView.ViewHolder
     {
-        public TextView tv;
-        private ImageView img;
+        private CardView itemPhotoCardview;
+        private ImageView itemPhotoImg;
 
-        public ItemViewHolder(View itemView)
+        public PhotoViewHolder(View itemView)
         {
             super(itemView);
-            tv = (TextView) itemView.findViewById(R.id.textView);
-            img = (ImageView) itemView.findViewById(R.id.imageView);
+            itemPhotoCardview = (CardView) itemView.findViewById(R.id.item_photo_cardview);
+            itemPhotoImg = (ImageView) itemView.findViewById(R.id.item_photo_img);
         }
     }
 
@@ -97,5 +112,26 @@ public class PhotoListAdater extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.list = list;
         notifyDataSetChanged();
 
+    }
+
+    private class BasicOnClickListener implements View.OnClickListener
+    {
+        private PhotoViewHolder photoViewHolder;
+
+        public BasicOnClickListener(PhotoViewHolder photoViewHolder)
+        {
+            this.photoViewHolder = photoViewHolder;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            switch (v.getId())
+            {
+                case R.id.item_photo_cardview:
+                    onItemClickListener.onItemClick(photoViewHolder.itemPhotoCardview, photoViewHolder.getLayoutPosition());
+                    break;
+            }
+        }
     }
 }

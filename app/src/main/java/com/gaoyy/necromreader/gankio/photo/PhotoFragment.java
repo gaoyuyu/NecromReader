@@ -21,7 +21,7 @@ import java.util.List;
  * Created by gaoyy on 2017/3/19 0019.
  */
 
-public class PhotoFragment extends BaseFragment implements PhotoContract.View, SwipeRefreshLayout.OnRefreshListener
+public class PhotoFragment extends BaseFragment implements PhotoContract.View, SwipeRefreshLayout.OnRefreshListener, PhotoListAdater.OnItemClickListener
 {
     private SwipeRefreshLayout photoSwipeRefreshLayout;
     private RecyclerView photoRv;
@@ -40,7 +40,16 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     {
         return R.layout.fragment_photo;
     }
+    public PhotoFragment()
+    {
 
+    }
+
+    public static PhotoFragment newInstance()
+    {
+        PhotoFragment fragment = new PhotoFragment();
+        return fragment;
+    }
     @Override
     protected void assignViews(View rootView)
     {
@@ -88,7 +97,6 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
                 super.onScrollStateChanged(recyclerView, newState);
                 for(int i=0;i<lastVisibleItem.length;i++)
                 {
-                    Log.e("array",lastVisibleItem[i]+"="+i+"=");
                     if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem[i] + 1 == photoListAdater.getItemCount())
                     {
                         pageNum= pageNum+1;
@@ -106,6 +114,9 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
 
             }
         });
+
+
+        photoListAdater.setOnItemClickListener(this);
 
     }
 
@@ -165,5 +176,11 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     {
         photoSwipeRefreshLayout.setRefreshing(true);
         mPhotoPresenter.loadPhotoData(1);
+    }
+
+    @Override
+    public void onItemClick(View view, int position)
+    {
+        Log.i(LOG_TAG, position+"");
     }
 }
