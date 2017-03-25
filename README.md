@@ -1,7 +1,7 @@
 # NecromReader Dev Log
 ---
 
-##2017.3.12
+## 2017.3.12
 
 ***[update]***
  1. 初步封装BaseActivity，BasePresenter，BaseView
@@ -9,7 +9,7 @@
 
 
 
-##2017.3.12
+## 2017.3.12
 
 ***[update]***
  1. 封装BaseFragment，LazyFragment
@@ -50,7 +50,7 @@
     }
 ```
 
-##2017.3.18
+## 2017.3.18
 
 ***[update]***
  1. 新闻详情页
@@ -61,7 +61,7 @@
  1. 由于BaseFragment继承自LazyFragment，正常在add之后需要setUserVisibleHint(true)，否则lazyload的if判断过不去，所以在ActivityUtils中做统一设置。
 
 
-##2017.3.19
+## 2017.3.19
 
 ***[update]***
  1. 新增GankFragment
@@ -103,5 +103,17 @@
         homeViewpager.setAdapter(newsPagerAdapter);
 ```
 
+## 2017.3.24
+
+***[update]***
+ 1. 新增PhotoFragment
 
 
+## 2017.3.25
+
+***[update]***
+ 1. 新增BigPhotoActivity,大图查看
+
+***[fix]***
+ 1. 设置统一Theme资源
+ 2. 大图查看`BigPhotoActivity`布局文件下的toolbar，为了适配statusbar，设置marginTop为25dp
