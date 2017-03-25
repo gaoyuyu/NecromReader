@@ -181,6 +181,7 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     @Override
     public void onItemClick(View view, int position)
     {
-        Log.i(LOG_TAG, position+"");
+        PhotoInfo.ResultsBean resultsBean = (PhotoInfo.ResultsBean) view.getTag();
+        mPhotoPresenter.onItemClick(activity,resultsBean);
     }
 }

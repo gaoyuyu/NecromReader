@@ -1,9 +1,11 @@
 package com.gaoyy.necromreader.gankio.photo;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.gaoyy.necromreader.api.RetrofitService;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
+import com.gaoyy.necromreader.bigphoto.BigPhotoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +68,10 @@ public class PhotoPresenter implements PhotoContract.Presenter
     @Override
     public void onItemClick(Context context, PhotoInfo.ResultsBean resultsBean)
     {
-
+        String url = resultsBean.getUrl();
+        Intent intent = new Intent(context, BigPhotoActivity.class);
+        intent.putExtra("url",url);
+        context.startActivity(intent);
     }
 
     @Override
