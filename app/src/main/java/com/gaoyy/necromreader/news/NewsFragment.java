@@ -12,6 +12,7 @@ import com.gaoyy.necromreader.adapter.NewsListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.NewsInfo;
 import com.gaoyy.necromreader.base.BaseFragment;
+import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View, New
     private ProgressBar newsProgressBar;
     private NewsListAdapter newsListAdapter;
     private List<NewsInfo.ResultBean.DataBean> list = new ArrayList<>();
+
     @Override
     protected int getFragmentLayoutId()
     {
@@ -71,12 +73,14 @@ public class NewsFragment extends BaseFragment implements NewsContract.View, New
         newsListAdapter = new NewsListAdapter(activity, list);
         newsRv.setAdapter(newsListAdapter);
         newsRv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        //设置刷新时动画的颜色
+        newsSwipeRefreshLayout = CommonUtils.setProgressBackgroundColor(activity, newsSwipeRefreshLayout);
         mNewsPresenter = new NewsPresenter(this);
-        Map<String,String> map = new HashMap<>();
-        if(isAdded())
+        Map<String, String> map = new HashMap<>();
+        if (isAdded())
         {
             //若不加isAdded就调用activity获取资源，会报异常，Fragment  not attached to Activity
-            map.put("type",activity.getResources().getString(getArguments().getInt("type")));
+            map.put("type", activity.getResources().getString(getArguments().getInt("type")));
             map.put("key", Constant.APPKEY);
             mNewsPresenter.loadNewsData(map);
         }
@@ -85,7 +89,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View, New
     }
 
     @Override
-    public void showLoading(String msg)
+    public void showLoading()
     {
         newsProgressBar.setVisibility(View.VISIBLE);
         newsSwipeRefreshLayout.setVisibility(View.GONE);
@@ -101,7 +105,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View, New
     @Override
     public void finishRefresh()
     {
-        if(newsSwipeRefreshLayout.isRefreshing())
+        if (newsSwipeRefreshLayout.isRefreshing())
         {
             newsSwipeRefreshLayout.setRefreshing(false);
         }
@@ -133,15 +137,15 @@ public class NewsFragment extends BaseFragment implements NewsContract.View, New
     @Override
     public void onItemClick(View view, int ition)
     {
-        NewsInfo.ResultBean.DataBean news = (NewsInfo.ResultBean.DataBean)view.getTag();
-        mNewsPresenter.onItemClick(activity,news);
+        NewsInfo.ResultBean.DataBean news = (NewsInfo.ResultBean.DataBean) view.getTag();
+        mNewsPresenter.onItemClick(activity, news);
     }
 
     @Override
     public void onRefresh()
     {
-        Map<String,String> map = new HashMap<>();
-        map.put("type",getResources().getString(getArguments().getInt("type")));
+        Map<String, String> map = new HashMap<>();
+        map.put("type", getResources().getString(getArguments().getInt("type")));
         map.put("key", Constant.APPKEY);
         mNewsPresenter.loadNewsData(map);
     }

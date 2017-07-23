@@ -32,6 +32,7 @@ public class NewsPresenter implements NewsContract.Presenter
     @Override
     public void loadNewsData(Map<String, String> map)
     {
+        mNewsView.showLoading();
         Call<NewsInfo> call = RetrofitService.sNewsService.getNewsData(map);
         call.enqueue(new Callback<NewsInfo>()
         {

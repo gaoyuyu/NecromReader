@@ -5,7 +5,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -14,6 +13,7 @@ import com.gaoyy.necromreader.adapter.PhotoListAdater;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
 import com.gaoyy.necromreader.base.BaseFragment;
+import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,16 +71,15 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
         photoRv.setLayoutManager(manager);
         photoRv.setItemAnimator(new DefaultItemAnimator());
 
-        //设置刷新时动画的颜色，可以设置4个
-        photoSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(android.R.color.white);
-        photoSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
-                android.R.color.holo_red_light, android.R.color.holo_orange_light,
-                android.R.color.holo_green_light);
-        photoSwipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue
-                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
-                        .getDisplayMetrics()));
+        //设置刷新时动画的颜色
+        photoSwipeRefreshLayout = CommonUtils.setProgressBackgroundColor(activity,photoSwipeRefreshLayout);
 
-        mPhotoPresenter.loadPhotoData(pageNum);
+        if (isAdded())
+        {
+            mPhotoPresenter.loadPhotoData(pageNum);
+        }
+
+
 
 
     }

@@ -1,5 +1,5 @@
 # NecromReader Dev Log
----
+
 
 ## 2017.3.12
 
@@ -117,3 +117,25 @@
 ***[fix]***
  1. 设置统一Theme资源
  2. 大图查看`BigPhotoActivity`布局文件下的toolbar，为了适配statusbar，设置marginTop为25dp
+
+
+ ## 2017.7.23
+
+ ***[update]***
+  1.增加PhotoView，图片放大缩小手势操作效果
+
+ ***[fix]***
+  1.PhotoActivity 图片列表上拉加载更多数据填充错乱，增加pageNum=1判断
+  ```Java
+      if (response.isSuccessful() && response.body() != null)
+      {
+          List<PhotoInfo.ResultsBean> list = response.body().getResults();
+          //pageNum=1 下拉刷新，清空list，pageNum不等于1，上拉加载更多，不清空
+          if(pageNum == 1) photoList.clear();
+          photoList.addAll(list);
+          mPhotoView.showPhotoData(photoList);
+      }
+  ```
+  2.增加loading
+
+

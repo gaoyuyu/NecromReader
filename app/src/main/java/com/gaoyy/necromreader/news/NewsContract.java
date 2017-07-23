@@ -17,7 +17,7 @@ public class NewsContract
 {
     interface View extends BaseView<Presenter>
     {
-        void showLoading(String msg);
+        void showLoading();
 
         void hideLoading();
 
