@@ -30,7 +30,7 @@ public class PhotoPresenter implements PhotoContract.Presenter
     }
 
     @Override
-    public void loadPhotoData(int pageNum)
+    public void loadPhotoData(final int pageNum)
     {
         Call<PhotoInfo> call = RetrofitService.sGankService.getPhotosData(pageNum);
         call.enqueue(new Callback<PhotoInfo>()
@@ -47,6 +47,7 @@ public class PhotoPresenter implements PhotoContract.Presenter
                 if (response.isSuccessful() && response.body() != null)
                 {
                     List<PhotoInfo.ResultsBean> list = response.body().getResults();
+                    if(pageNum == 1) photoList.clear();
                     photoList.addAll(list);
                     mPhotoView.showPhotoData(photoList);
                 }

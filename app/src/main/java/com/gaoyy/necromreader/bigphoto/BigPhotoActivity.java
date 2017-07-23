@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.bm.library.PhotoView;
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.base.BaseActivity;
 import com.squareup.picasso.Picasso;
@@ -14,8 +17,13 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
 {
     private BigPhotoContract.Presenter mBigPresenter;
     private static final String LOG_TAG = BigPhotoActivity.class.getSimpleName();
-    private ImageView bigImg;
+    private PhotoView bigImg;
     private Toolbar bigToolbar;
+    private LinearLayout bigPhotoTool;
+    private TextView bigPhotoDownload;
+    private TextView bigPhotoSettingfor;
+    private RelativeLayout bigPhotoLayout;
+
 
     @Override
     protected void initContentView()
@@ -27,8 +35,12 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
     protected void assignViews()
     {
         super.assignViews();
-        bigImg = (ImageView) findViewById(R.id.big_img);
+        bigImg = (PhotoView) findViewById(R.id.big_img);
         bigToolbar = (Toolbar) findViewById(R.id.big_toolbar);
+        bigPhotoTool = (LinearLayout) findViewById(R.id.big_photo_tool);
+        bigPhotoDownload = (TextView) findViewById(R.id.big_photo_download);
+        bigPhotoSettingfor = (TextView) findViewById(R.id.big_photo_settingfor);
+        bigPhotoLayout = (RelativeLayout) findViewById(R.id.big_photo_layout);
     }
 
     @Override
@@ -44,12 +56,11 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         String url = getIntent().getStringExtra("url");
         Picasso.with(this)
                 .load(url)
-                .placeholder(R.mipmap.loading_bg)
-                .error(R.mipmap.error_bg)
                 .fit()
                 .into(bigImg);
-
+        bigImg.enable();
     }
+
 
     @Override
     public boolean isActive()

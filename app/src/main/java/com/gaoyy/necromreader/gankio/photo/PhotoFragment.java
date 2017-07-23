@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.PhotoListAdater;
+import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
 import com.gaoyy.necromreader.base.BaseFragment;
 
@@ -99,8 +100,10 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
                 {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem[i] + 1 == photoListAdater.getItemCount())
                     {
+                        Log.i(Constant.TAG,"上拉加载更多 before pageNum-->"+pageNum);
                         pageNum= pageNum+1;
                         mPhotoPresenter.loadPhotoData(pageNum);
+                        Log.i(Constant.TAG,"上拉加载更多 after pageNum-->"+pageNum);
                     }
                 }
 
@@ -174,8 +177,10 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     @Override
     public void onRefresh()
     {
+        pageNum = 1;
         photoSwipeRefreshLayout.setRefreshing(true);
-        mPhotoPresenter.loadPhotoData(1);
+        Log.i(Constant.TAG,"下拉刷新pageNum-->"+pageNum);
+        mPhotoPresenter.loadPhotoData(pageNum);
     }
 
     @Override

@@ -25,4 +25,6 @@
     <string name="gankio">干货集中营</string>
     <string name="android">Android</string>
     <string name="photo">福利</string>
+    <string name="download">下载</string>
+    <string name="setting_for">设置为</string>
 </resources>
