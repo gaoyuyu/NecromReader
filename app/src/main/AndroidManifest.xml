@@ -37,7 +37,8 @@
             android:name=".newsdetail.NewsDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".bigphoto.BigPhotoActivity"
+        <activity
+            android:name=".bigphoto.BigPhotoActivity"
             android:theme="@style/AppTheme.BigPhotoTheme"
             >
         </activity>

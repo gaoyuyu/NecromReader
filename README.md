@@ -126,16 +126,26 @@
 
  ***[fix]***
   1.PhotoActivity 图片列表上拉加载更多数据填充错乱，增加pageNum=1判断
-```Java
-  if (response.isSuccessful() && response.body() != null)
-  {
-      List<PhotoInfo.ResultsBean> list = response.body().getResults();
-      //pageNum=1 下拉刷新，清空list，pageNum不等于1，上拉加载更多，不清空
-      if(pageNum == 1) photoList.clear();
-      photoList.addAll(list);
-      mPhotoView.showPhotoData(photoList);
-  }
-```
   2.增加loading
+```Java
+if (response.isSuccessful() && response.body() != null)
+{
+    List<PhotoInfo.ResultsBean> list = response.body().getResults();
+    //pageNum=1 下拉刷新，清空list，pageNum不等于1，上拉加载更多，不清空
+    if(pageNum == 1) photoList.clear();
+    photoList.addAll(list);
+    mPhotoView.showPhotoData(photoList);
+}
+```
+
+
+## 2017.7.25
+
+***[update]***
+ 1. 图片下载功能
+ 2. 动态获取`WRITE_EXTERNAL_STORAGE`权限
+
+***[fix]***
+ 1. 新建BaseLazyFragment
 
 

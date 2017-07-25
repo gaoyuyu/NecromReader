@@ -32,7 +32,6 @@ public class PhotoPresenter implements PhotoContract.Presenter
     @Override
     public void loadPhotoData(final int pageNum)
     {
-        mPhotoView.showLoading();
         Call<PhotoInfo> call = RetrofitService.sGankService.getPhotosData(pageNum);
         call.enqueue(new Callback<PhotoInfo>()
         {
@@ -72,8 +71,11 @@ public class PhotoPresenter implements PhotoContract.Presenter
     public void onItemClick(Context context, PhotoInfo.ResultsBean resultsBean)
     {
         String url = resultsBean.getUrl();
+        int index = url.lastIndexOf("/");
+        String ImgName = url.substring(index+1,url.length());
         Intent intent = new Intent(context, BigPhotoActivity.class);
         intent.putExtra("url",url);
+        intent.putExtra("name",ImgName);
         context.startActivity(intent);
     }
 

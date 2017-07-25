@@ -9,4 +9,7 @@ public class Constant
 
     public static final String URL_GANK_PHOTO_BASE="http://gank.io/api/data/福利/";
 
+
+    public static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1000;
+
 }

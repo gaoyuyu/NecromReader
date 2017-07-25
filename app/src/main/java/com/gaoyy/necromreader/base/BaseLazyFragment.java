@@ -12,9 +12,9 @@ import com.gaoyy.necromreader.R;
  * Created by gaoyy on 2017/3/11 0011.
  */
 
-public abstract class BaseFragment extends LazyFragment
+public abstract class BaseLazyFragment extends LazyFragment
 {
-    private static final String LOG_TAG = BaseFragment.class.getSimpleName();
+    private static final String LOG_TAG = BaseLazyFragment.class.getSimpleName();
     // 标志位，标志已经初始化完成。
     private boolean isPrepared;
     private View rootView;
@@ -48,14 +48,8 @@ public abstract class BaseFragment extends LazyFragment
         }
         activity = (BaseActivity)getActivity();
 
-        assignViews(rootView);
-        initToolbar();
-        configViews();
-
-        setListener();
-
-//        isPrepared = true;
-//        lazyLoad();
+        isPrepared = true;
+        lazyLoad();
         return rootView;
     }
 

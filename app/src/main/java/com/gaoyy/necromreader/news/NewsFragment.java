@@ -11,7 +11,7 @@ import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.NewsListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.NewsInfo;
-import com.gaoyy.necromreader.base.BaseFragment;
+import com.gaoyy.necromreader.base.BaseLazyFragment;
 import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by gaoyy on 2017/3/12 0012.
  */
 
-public class NewsFragment extends BaseFragment implements NewsContract.View, NewsListAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener
+public class NewsFragment extends BaseLazyFragment implements NewsContract.View, NewsListAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener
 {
     private static final String LOG_TAG = NewsFragment.class.getSimpleName();
     private NewsContract.Presenter mNewsPresenter;
