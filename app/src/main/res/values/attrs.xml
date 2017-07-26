@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WaveView">
+        <!-- 遮罩类型 圆形 矩形 圆角矩形 自定义图片-->
+        <attr name="maskType">
+            <enum name="Circle" value="1"/>
+            <enum name="Rect" value="2"/>
+            <enum name="RoundRect" value="3"/>
+            <enum name="Custom" value="4"/>
+        </attr>
+        <!-- 遮罩背景颜色，除自定义图片外-->
+        <attr name="maskColor" format="color"></attr>
+        <!-- 自定义图片 应用-->
+        <attr name="maskCustomBackground" format="reference"></attr>
+        <!-- 波浪颜色 -->
+        <attr name="waveColor" format="color"></attr>
+
+    </declare-styleable>
+
+</resources>

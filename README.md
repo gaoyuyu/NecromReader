@@ -127,16 +127,6 @@
  ***[fix]***
   1.PhotoActivity 图片列表上拉加载更多数据填充错乱，增加pageNum=1判断
   2.增加loading
-```Java
-if (response.isSuccessful() && response.body() != null)
-{
-    List<PhotoInfo.ResultsBean> list = response.body().getResults();
-    //pageNum=1 下拉刷新，清空list，pageNum不等于1，上拉加载更多，不清空
-    if(pageNum == 1) photoList.clear();
-    photoList.addAll(list);
-    mPhotoView.showPhotoData(photoList);
-}
-```
 
 
 ## 2017.7.25
@@ -147,5 +137,13 @@ if (response.isSuccessful() && response.body() != null)
 
 ***[fix]***
  1. 新建BaseLazyFragment
+
+
+
+## 2017.7.26
+
+***[update]***
+ 1. 增加WaveView显示下载进度
+
 
 

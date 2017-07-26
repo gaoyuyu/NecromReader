@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:WaveView="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/big_photo_layout"
@@ -42,33 +43,69 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/big_photo_download"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="100dp"
-            android:drawableLeft="@drawable/ic_download"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="center|center_horizontal"
-            android:padding="10dp"
-            android:text="@string/download"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            />
 
-        <TextView
-            android:id="@+id/big_photo_settingfor"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_setting_for"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="center|center_horizontal"
-            android:padding="10dp"
-            android:text="@string/setting_for"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
 
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.gaoyy.necromreader.view.WaveView
+                    android:id="@+id/wave"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    WaveView:maskColor="@color/wave_mask_color"
+                    WaveView:maskType="Rect"
+                    WaveView:waveColor="@color/wave_color"/>
+
+                <TextView
+                    android:id="@+id/big_photo_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/ic_download"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center|center_horizontal"
+                    android:padding="10dp"
+                    android:text="@string/download"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:visibility="visible"
+                    android:layout_alignBottom="@+id/wave"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/big_photo_settingfor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_setting_for"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center|center_horizontal"
+                android:padding="10dp"
+                android:text="@string/setting_for"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                />
+        </LinearLayout>
 
     </LinearLayout>
 

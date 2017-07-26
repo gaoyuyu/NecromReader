@@ -1,12 +1,18 @@
 package com.gaoyy.necromreader.bigphoto;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.DownloadManager;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,7 +29,13 @@ import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.base.BaseActivity;
 import com.gaoyy.necromreader.util.CommonUtils;
+import com.gaoyy.necromreader.view.WaveView;
 import com.squareup.picasso.Picasso;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static com.gaoyy.necromreader.R.id.wave;
 
 public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.View, View.OnClickListener
 {
@@ -35,10 +47,38 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
     private TextView bigPhotoDownload;
     private TextView bigPhotoSettingfor;
     private RelativeLayout bigPhotoLayout;
-
+    private WaveView waveView;
 
     private DownloadManager downloadManager;
     private DownloadManager.Request request;
+
+
+    private Timer timer;
+    private long id;
+    private TimerTask task;
+    Handler handler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            int precent = bundle.getInt("precent");
+
+            Log.i(Constant.TAG, "handle precent-->" + precent);
+
+
+            int height = waveView.getWaveViewHeight();
+
+            int riseY = height * (precent / 100);
+
+            if (riseY >= height)
+            {
+                riseY += 100;
+            }
+            waveView.updateViewWithRiseY(riseY);
+        }
+    };
 
 
     @Override
@@ -57,6 +97,7 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         bigPhotoDownload = (TextView) findViewById(R.id.big_photo_download);
         bigPhotoSettingfor = (TextView) findViewById(R.id.big_photo_settingfor);
         bigPhotoLayout = (RelativeLayout) findViewById(R.id.big_photo_layout);
+        waveView = (WaveView) findViewById(wave);
     }
 
     @Override
@@ -90,7 +131,6 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
 
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-
         //创建目录
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdir();
 
@@ -100,8 +140,52 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         Log.i(Constant.TAG, "Downloads Path->" + Environment.DIRECTORY_DOWNLOADS);
 
 
+        //设置WaveView不可见
+        waveView.setAlpha(0f);
+
+        setTimer();
+
         setListener();
 
+    }
+
+    /**
+     * 设置计时器，取下载进度
+     */
+    private void setTimer()
+    {
+        final DownloadManager.Query query = new DownloadManager.Query();
+        timer = new Timer();
+        task = new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                Cursor cursor = downloadManager.query(query.setFilterById(id));
+                if (cursor != null && cursor.moveToFirst())
+                {
+                    if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL)
+                    {
+                        task.cancel();
+                    }
+                    //Notification 标题
+                    String title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE));
+                    //下载的文件到本地的目录
+                    String imagePath = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                    int downloadBytes = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                    int totalBytes = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                    int precent = (downloadBytes * 100) / totalBytes;
+
+                    Message msg = Message.obtain();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("precent", precent);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                }
+                cursor.close();
+            }
+        };
+        timer.schedule(task, 0, 150);
     }
 
     private void setListener()
@@ -164,19 +248,33 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
                 }
                 else
                 {
-                    CommonUtils.showToast(this, "文件存储权限已授权");
-                    long downloadId = downloadManager.enqueue(request);
-                    Log.i(Constant.TAG, "download id -->" + downloadId);
+                    Log.e(Constant.TAG, "====文件存储权限已授权=====");
+                    downloadImage();
                 }
-
-
-
-
                 break;
             case R.id.big_photo_settingfor:
                 CommonUtils.showToast(this, "se");
                 break;
         }
+    }
+
+    private void downloadImage()
+    {
+        ObjectAnimator waveAlpha = ObjectAnimator.ofFloat(waveView, "Alpha", waveView.getAlpha(), 1.0f).setDuration(2000);
+        waveAlpha.start();
+        waveAlpha.addListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationEnd(animation);
+                CommonUtils.showToast(BigPhotoActivity.this, "end");
+                id = downloadManager.enqueue(request);
+                Log.i(Constant.TAG, "download id -->" + id);
+                task.run();
+
+            }
+        });
     }
 
     @Override
@@ -186,9 +284,8 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
-                Log.e(Constant.TAG, "====PERMISSION_GRANTED=====");
-                long downloadId = downloadManager.enqueue(request);
-                Log.i(Constant.TAG, "download id -->" + downloadId);
+                Log.e(Constant.TAG, "====文件存储权限已授权=====");
+                downloadImage();
             }
             else
             {

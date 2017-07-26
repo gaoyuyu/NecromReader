@@ -8,4 +8,12 @@
     <color name="item_text_color">#0c0c0c</color>
     <color name="item_text_sub_color">#a4a4a4</color>
     <color name="item_divider_color">#d4d4d4</color>
+
+
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    
+    <color name="wave_mask_color">#5ddfd9d9</color>
+    <color name="wave_color">#52f520</color>
 </resources>
