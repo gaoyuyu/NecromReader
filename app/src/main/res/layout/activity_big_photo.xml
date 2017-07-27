@@ -64,7 +64,7 @@
                     android:layout_margin="2dp"
                     WaveView:maskColor="@color/wave_mask_color"
                     WaveView:maskType="Rect"
-                    WaveView:waveColor="@color/wave_color"/>
+                    WaveView:waveColor="@color/green_colorPrimary"/>
 
                 <TextView
                     android:id="@+id/big_photo_download"
@@ -77,6 +77,36 @@
                     android:padding="10dp"
                     android:text="@string/download"
                     android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:visibility="visible"
+                    android:layout_alignBottom="@+id/wave"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:id="@+id/big_photo_downloading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/ic_download"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center|center_horizontal"
+                    android:padding="10dp"
+                    android:text="@string/downloading"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:visibility="visible"
+                    android:layout_alignBottom="@+id/wave"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:id="@+id/big_photo_download_finsh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/ic_download_finish"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center|center_horizontal"
+                    android:padding="10dp"
+                    android:text="@string/download_finish"
+                    android:textColor="@color/green_colorPrimary"
                     android:textSize="15sp"
                     android:visibility="visible"
                     android:layout_alignBottom="@+id/wave"

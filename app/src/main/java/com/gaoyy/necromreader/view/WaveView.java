@@ -17,7 +17,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -221,7 +220,6 @@ public class WaveView extends View implements Runnable
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
         setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec));
-        Log.i(TAG, "onMeasure" + getMeasuredWidth() + "_______" + getMeasuredHeight());
     }
 
     private int measureWidth(int widthMeasureSpec)
@@ -232,14 +230,11 @@ public class WaveView extends View implements Runnable
         switch (specMode)
         {
             case MeasureSpec.EXACTLY:
-                Log.i(TAG, "width MeasureSpec.EXACTLY");
                 result = specSize;
                 break;
             case MeasureSpec.UNSPECIFIED:
-                Log.i(TAG, "width MeasureSpec.UNSPECIFIED");
                 break;
             case MeasureSpec.AT_MOST:
-                Log.i(TAG, "width MeasureSpec.AT_MOST");
                 break;
         }
         mWidth = result;
@@ -255,14 +250,11 @@ public class WaveView extends View implements Runnable
         switch (specMode)
         {
             case MeasureSpec.EXACTLY:
-                Log.i(TAG, "height MeasureSpec.EXACTLY");
                 result = specSize;
                 break;
             case MeasureSpec.UNSPECIFIED:
-                Log.i(TAG, "height MeasureSpec.UNSPECIFIED");
                 break;
             case MeasureSpec.AT_MOST:
-                Log.i(TAG, "height MeasureSpec.AT_MOST");
                 //wrap_content下默认为200dp
                 break;
         }

@@ -3,11 +3,14 @@ package com.gaoyy.necromreader.bigphoto;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.DownloadManager;
+import android.app.WallpaperManager;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,6 +35,8 @@ import com.gaoyy.necromreader.util.CommonUtils;
 import com.gaoyy.necromreader.view.WaveView;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,12 +50,18 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
     private Toolbar bigToolbar;
     private LinearLayout bigPhotoTool;
     private TextView bigPhotoDownload;
+    private TextView bigPhotoDownloading;
+    private TextView bigPhotoDownloadFinish;
     private TextView bigPhotoSettingfor;
     private RelativeLayout bigPhotoLayout;
     private WaveView waveView;
+    private File imageFile;
 
     private DownloadManager downloadManager;
     private DownloadManager.Request request;
+
+    private final int MSG_LOADING = 1;
+    private final int MSG_FINISH = 2;
 
 
     private Timer timer;
@@ -62,21 +73,45 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            Bundle bundle = msg.getData();
-            int precent = bundle.getInt("precent");
 
-            Log.i(Constant.TAG, "handle precent-->" + precent);
-
-
-            int height = waveView.getWaveViewHeight();
-
-            int riseY = height * (precent / 100);
-
-            if (riseY >= height)
+            switch (msg.what)
             {
-                riseY += 100;
+                case MSG_LOADING:
+                    Bundle bundle = msg.getData();
+                    int precent = bundle.getInt("precent");
+                    Log.i(Constant.TAG, "handle precent-->" + precent);
+                    int height = waveView.getWaveViewHeight();
+                    int riseY = height * (precent / 100);
+                    if (riseY >= height)
+                    {
+                        riseY += 100;
+                    }
+                    waveView.updateViewWithRiseY(riseY);
+                    break;
+                case MSG_FINISH:
+                    ObjectAnimator waveAlpha = ObjectAnimator.ofFloat(waveView, "Alpha", 1.0f, 0.0f).setDuration(2000);
+                    waveAlpha.start();
+                    waveAlpha.addListener(new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationStart(Animator animation)
+                        {
+                            super.onAnimationStart(animation);
+                            waveView.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            super.onAnimationEnd(animation);
+                            bigPhotoDownload.setVisibility(View.GONE);
+                            bigPhotoDownloading.setVisibility(View.GONE);
+                            bigPhotoDownloadFinish.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    break;
             }
-            waveView.updateViewWithRiseY(riseY);
+
         }
     };
 
@@ -95,6 +130,8 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         bigToolbar = (Toolbar) findViewById(R.id.big_toolbar);
         bigPhotoTool = (LinearLayout) findViewById(R.id.big_photo_tool);
         bigPhotoDownload = (TextView) findViewById(R.id.big_photo_download);
+        bigPhotoDownloading = (TextView) findViewById(R.id.big_photo_downloading);
+        bigPhotoDownloadFinish = (TextView) findViewById(R.id.big_photo_download_finsh);
         bigPhotoSettingfor = (TextView) findViewById(R.id.big_photo_settingfor);
         bigPhotoLayout = (RelativeLayout) findViewById(R.id.big_photo_layout);
         waveView = (WaveView) findViewById(wave);
@@ -112,11 +149,6 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         super.configViews(savedInstanceState);
         String url = getIntent().getStringExtra("url");
         String name = getIntent().getStringExtra("name");
-        Picasso.with(this)
-                .load(url)
-                .fit()
-                .into(bigImg);
-        bigImg.enable();
 
 
         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -134,13 +166,46 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         //创建目录
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdir();
 
+
         //设置文件存放路径
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name);
 
-        Log.i(Constant.TAG, "Downloads Path->" + Environment.DIRECTORY_DOWNLOADS);
+        String imagePath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
 
+        Log.i(Constant.TAG, "Downloads Path->" + imagePath);
 
-        //设置WaveView不可见
+        imageFile = new File(imagePath, name);
+
+        Log.i(Constant.TAG, "exists ==>" + imageFile.exists());
+
+        if (imageFile.exists())
+        {
+            //文件已下载，加载本地图片
+            bigPhotoDownload.setVisibility(View.GONE);
+            bigPhotoDownloading.setVisibility(View.GONE);
+            bigPhotoDownloadFinish.setVisibility(View.VISIBLE);
+
+            Picasso.with(this)
+                    .load(imageFile)
+                    .fit()
+                    .into(bigImg);
+        }
+        else
+        {
+            //文件未下载，加载网络图片
+            bigPhotoDownload.setVisibility(View.VISIBLE);
+            bigPhotoDownloading.setVisibility(View.GONE);
+            bigPhotoDownloadFinish.setVisibility(View.GONE);
+
+            Picasso.with(this)
+                    .load(url)
+                    .fit()
+                    .into(bigImg);
+        }
+
+        bigImg.enable();
+
+        //设置WaveView不可见，alpha=0
         waveView.setAlpha(0f);
 
         setTimer();
@@ -161,12 +226,14 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
             @Override
             public void run()
             {
+                Message msg = new Message();
                 Cursor cursor = downloadManager.query(query.setFilterById(id));
                 if (cursor != null && cursor.moveToFirst())
                 {
                     if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL)
                     {
                         task.cancel();
+                        handler.sendEmptyMessage(MSG_FINISH);
                     }
                     //Notification 标题
                     String title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE));
@@ -176,9 +243,10 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
                     int totalBytes = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
                     int precent = (downloadBytes * 100) / totalBytes;
 
-                    Message msg = Message.obtain();
+
                     Bundle bundle = new Bundle();
                     bundle.putInt("precent", precent);
+                    msg.what = MSG_LOADING;
                     msg.setData(bundle);
                     handler.sendMessage(msg);
                 }
@@ -231,7 +299,6 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         switch (id)
         {
             case R.id.big_photo_download:
-                CommonUtils.showToast(this, "don");
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
                 {
                     Log.e(Constant.TAG, "====申请权限=====");
@@ -253,7 +320,27 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
                 }
                 break;
             case R.id.big_photo_settingfor:
-                CommonUtils.showToast(this, "se");
+                if(imageFile.exists())
+                {
+                    WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+                    try
+                    {
+                        wallpaperManager.setBitmap(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
+                        CommonUtils.showSnackBar(bigPhotoTool,"设置成功");
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                        CommonUtils.showSnackBar(bigPhotoTool,"设置失败");
+                    }
+                }
+                else
+                {
+                    CommonUtils.showSnackBar(bigPhotoTool,"Please Download");
+                }
+
+
+
                 break;
         }
     }
@@ -265,16 +352,41 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         waveAlpha.addListener(new AnimatorListenerAdapter()
         {
             @Override
+            public void onAnimationStart(Animator animation)
+            {
+                super.onAnimationStart(animation);
+                waveView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation)
             {
                 super.onAnimationEnd(animation);
-                CommonUtils.showToast(BigPhotoActivity.this, "end");
                 id = downloadManager.enqueue(request);
                 Log.i(Constant.TAG, "download id -->" + id);
                 task.run();
 
             }
         });
+
+
+        ObjectAnimator downloadAlpha = ObjectAnimator.ofFloat(bigPhotoDownload, "Alpha", 1.0f, 0.0f).setDuration(150);
+        ObjectAnimator downloadingAlpha = ObjectAnimator.ofFloat(bigPhotoDownloading, "Alpha", 0.0f, 1.0f).setDuration(2000);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(downloadAlpha, downloadingAlpha);
+        animatorSet.addListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationStart(Animator animation)
+            {
+                super.onAnimationStart(animation);
+                bigPhotoDownload.setVisibility(View.VISIBLE);
+                bigPhotoDownloading.setVisibility(View.VISIBLE);
+            }
+        });
+        animatorSet.start();
+
+
     }
 
     @Override

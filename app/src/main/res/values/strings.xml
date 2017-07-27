@@ -26,5 +26,7 @@
     <string name="android">Android</string>
     <string name="photo">福利</string>
     <string name="download">下载</string>
-    <string name="setting_for">设置为</string>
+    <string name="downloading">下载中</string>
+    <string name="download_finish">已下载</string>
+    <string name="setting_for">设置为壁纸</string>
 </resources>
