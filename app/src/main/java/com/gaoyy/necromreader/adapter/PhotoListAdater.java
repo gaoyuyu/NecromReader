@@ -111,7 +111,6 @@ public class PhotoListAdater extends RecyclerView.Adapter<RecyclerView.ViewHolde
     {
         this.list = list;
         notifyDataSetChanged();
-
     }
 
     private class BasicOnClickListener implements View.OnClickListener

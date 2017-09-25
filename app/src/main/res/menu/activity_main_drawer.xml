@@ -11,27 +11,15 @@
             android:id="@+id/nav_gank"
             android:icon="@drawable/ic_menu_gank"
             android:title="@string/gankio"/>
-        <!--<item-->
-        <!--android:id="@+id/nav_slideshow"-->
-        <!--android:icon="@drawable/ic_menu_slideshow"-->
-        <!--android:title="Slideshow"/>-->
+        <item
+            android:id="@+id/nav_my_download"
+            android:icon="@drawable/ic_download_black"
+            android:title="@string/my_download"/>
         <!--<item-->
         <!--android:id="@+id/nav_manage"-->
         <!--android:icon="@drawable/ic_menu_manage"-->
         <!--android:title="Tools"/>-->
     </group>
 
-    <!--<item android:title="Communicate">-->
-    <!--<menu>-->
-    <!--<item-->
-    <!--android:id="@+id/nav_share"-->
-    <!--android:icon="@drawable/ic_menu_share"-->
-    <!--android:title="Share"/>-->
-    <!--<item-->
-    <!--android:id="@+id/nav_send"-->
-    <!--android:icon="@drawable/ic_menu_send"-->
-    <!--android:title="Send"/>-->
-    <!--</menu>-->
-    <!--</item>-->
 
 </menu>

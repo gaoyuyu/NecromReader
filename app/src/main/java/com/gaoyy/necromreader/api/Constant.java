@@ -12,4 +12,6 @@ public class Constant
 
     public static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1000;
 
+    public static final String PIC_PATH = "/NecromReader";
+
 }

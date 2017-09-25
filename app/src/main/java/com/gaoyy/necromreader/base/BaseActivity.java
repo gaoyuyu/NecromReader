@@ -27,8 +27,9 @@ public abstract class BaseActivity extends AppCompatActivity
         initToolbar();
         //配置views
         configViews(savedInstanceState);
+        //设置监听器
+        setListener();
     }
-
 
     protected abstract void initContentView();
 
@@ -46,6 +47,12 @@ public abstract class BaseActivity extends AppCompatActivity
     {
 
     }
+
+    protected  void setListener()
+    {
+
+    }
+    
 
 
     /**

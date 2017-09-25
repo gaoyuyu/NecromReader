@@ -29,4 +29,5 @@
     <string name="downloading">下载中</string>
     <string name="download_finish">已下载</string>
     <string name="setting_for">设置为壁纸</string>
+    <string name="my_download">我的下载</string>
 </resources>

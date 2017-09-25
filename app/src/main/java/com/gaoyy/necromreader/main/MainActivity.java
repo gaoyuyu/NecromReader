@@ -1,5 +1,6 @@
 package com.gaoyy.necromreader.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.base.BaseActivity;
 import com.gaoyy.necromreader.gankio.GankFragment;
 import com.gaoyy.necromreader.gankio.GankPresenter;
+import com.gaoyy.necromreader.mydownload.MyDownloadActivity;
 import com.gaoyy.necromreader.util.ActivityUtils;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
@@ -155,6 +157,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
                 switchContent(currentFragment, gankFragment);
                 new GankPresenter(gankFragment);
+                break;
+
+            case R.id.nav_my_download:
+                Intent myDownload  = new Intent(MainActivity.this, MyDownloadActivity.class);
+                startActivity(myDownload);
                 break;
         }
 

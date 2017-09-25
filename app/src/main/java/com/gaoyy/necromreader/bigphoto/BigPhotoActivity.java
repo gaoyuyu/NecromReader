@@ -166,11 +166,10 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         //创建目录
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdir();
 
-
         //设置文件存放路径
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS + Constant.PIC_PATH, name);
 
-        String imagePath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+        String imagePath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString() + Constant.PIC_PATH;
 
         Log.i(Constant.TAG, "Downloads Path->" + imagePath);
 
@@ -209,8 +208,6 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         waveView.setAlpha(0f);
 
         setTimer();
-
-        setListener();
 
     }
 
@@ -256,12 +253,14 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         timer.schedule(task, 0, 150);
     }
 
-    private void setListener()
+
+    @Override
+    protected void setListener()
     {
+        super.setListener();
         bigPhotoDownload.setOnClickListener(this);
         bigPhotoSettingfor.setOnClickListener(this);
     }
-
 
     @Override
     public boolean isActive()
@@ -320,27 +319,24 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
                 }
                 break;
             case R.id.big_photo_settingfor:
-                if(imageFile.exists())
+                if (imageFile.exists())
                 {
                     WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
                     try
                     {
                         wallpaperManager.setBitmap(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
-                        CommonUtils.showSnackBar(bigPhotoTool,"设置成功");
+                        CommonUtils.showSnackBar(bigPhotoTool, "设置成功");
                     }
                     catch (IOException e)
                     {
                         e.printStackTrace();
-                        CommonUtils.showSnackBar(bigPhotoTool,"设置失败");
+                        CommonUtils.showSnackBar(bigPhotoTool, "设置失败");
                     }
                 }
                 else
                 {
-                    CommonUtils.showSnackBar(bigPhotoTool,"Please Download");
+                    CommonUtils.showSnackBar(bigPhotoTool, "Please Download");
                 }
-
-
-
                 break;
         }
     }
