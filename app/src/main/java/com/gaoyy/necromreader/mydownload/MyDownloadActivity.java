@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -69,8 +70,8 @@ public class MyDownloadActivity extends BaseActivity implements SwipeRefreshLayo
     {
         super.configViews(savedInstanceState);
 
-        ArrayList<String> data= listFiles();
-        if(data.size() !=0)
+        ArrayList<String> data = listFiles();
+        if (data.size() != 0)
         {
             myDownloadEmptyLayout.setVisibility(View.GONE);
             myDownloadSrLayout.setVisibility(View.VISIBLE);
@@ -83,11 +84,18 @@ public class MyDownloadActivity extends BaseActivity implements SwipeRefreshLayo
         downloadListAdapter = new DownloadListAdapter(this, data);
         myDownloadRv.setAdapter(downloadListAdapter);
 
-        manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+        //先实例化Callback
+        ItemTouchHelper.Callback callback = new BasicItemTouchCallBack(downloadListAdapter);
+        //用Callback构造ItemtouchHelper
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        //调用ItemTouchHelper的attachToRecyclerView方法建立联系
+        touchHelper.attachToRecyclerView(myDownloadRv);
+
+        manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         myDownloadRv.setLayoutManager(manager);
         myDownloadRv.setItemAnimator(new DefaultItemAnimator());
         //设置刷新时动画的颜色
-        myDownloadSrLayout = CommonUtils.setProgressBackgroundColor(this,myDownloadSrLayout);
+        myDownloadSrLayout = CommonUtils.setProgressBackgroundColor(this, myDownloadSrLayout);
 
     }
 
@@ -129,9 +137,9 @@ public class MyDownloadActivity extends BaseActivity implements SwipeRefreshLayo
     @Override
     public void onRefresh()
     {
-        ArrayList<String> data= listFiles();
+        ArrayList<String> data = listFiles();
         myDownloadSrLayout.setRefreshing(false);
-        if(data.size() !=0)
+        if (data.size() != 0)
         {
             myDownloadEmptyLayout.setVisibility(View.GONE);
             myDownloadSrLayout.setVisibility(View.VISIBLE);
