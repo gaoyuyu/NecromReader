@@ -35,12 +35,14 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     private int[] lastVisibleItem;
 
     private StaggeredGridLayoutManager manager;
+    private String tabType;
 
     @Override
     protected int getFragmentLayoutId()
     {
         return R.layout.fragment_photo;
     }
+
     public PhotoFragment()
     {
 
@@ -51,6 +53,14 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
         PhotoFragment fragment = new PhotoFragment();
         return fragment;
     }
+
+    @Override
+    protected void getParamsData()
+    {
+        super.getParamsData();
+        tabType = getActivity().getResources().getString(getArguments().getInt("type"));
+    }
+
     @Override
     protected void assignViews(View rootView)
     {
@@ -72,14 +82,12 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
         photoRv.setItemAnimator(new DefaultItemAnimator());
 
         //设置刷新时动画的颜色
-        photoSwipeRefreshLayout = CommonUtils.setProgressBackgroundColor(activity,photoSwipeRefreshLayout);
+        photoSwipeRefreshLayout = CommonUtils.setProgressBackgroundColor(activity, photoSwipeRefreshLayout);
 
         if (isAdded())
         {
-            mPhotoPresenter.loadPhotoData(pageNum);
+            mPhotoPresenter.loadPhotoData(tabType, pageNum);
         }
-
-
 
 
     }
@@ -95,14 +103,14 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
             public void onScrollStateChanged(RecyclerView recyclerView, int newState)
             {
                 super.onScrollStateChanged(recyclerView, newState);
-                for(int i=0;i<lastVisibleItem.length;i++)
+                for (int i = 0; i < lastVisibleItem.length; i++)
                 {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem[i] + 1 == photoListAdater.getItemCount())
                     {
-                        Log.i(Constant.TAG,"上拉加载更多 before pageNum-->"+pageNum);
-                        pageNum= pageNum+1;
-                        mPhotoPresenter.loadPhotoData(pageNum);
-                        Log.i(Constant.TAG,"上拉加载更多 after pageNum-->"+pageNum);
+                        Log.i(Constant.TAG, "上拉加载更多 before pageNum-->" + pageNum);
+                        pageNum = pageNum + 1;
+                        mPhotoPresenter.loadPhotoData(tabType, pageNum);
+                        Log.i(Constant.TAG, "上拉加载更多 after pageNum-->" + pageNum);
                     }
                 }
 
@@ -139,7 +147,7 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     @Override
     public void finishRefresh()
     {
-        if(photoSwipeRefreshLayout.isRefreshing())
+        if (photoSwipeRefreshLayout.isRefreshing())
         {
             photoSwipeRefreshLayout.setRefreshing(false);
         }
@@ -178,14 +186,14 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     {
         pageNum = 1;
         photoSwipeRefreshLayout.setRefreshing(true);
-        Log.i(Constant.TAG,"下拉刷新pageNum-->"+pageNum);
-        mPhotoPresenter.loadPhotoData(pageNum);
+        Log.i(Constant.TAG, "下拉刷新pageNum-->" + pageNum);
+        mPhotoPresenter.loadPhotoData(tabType, pageNum);
     }
 
     @Override
     public void onItemClick(View view, int position)
     {
         PhotoInfo.ResultsBean resultsBean = (PhotoInfo.ResultsBean) view.getTag();
-        mPhotoPresenter.onItemClick(activity,resultsBean);
+        mPhotoPresenter.onItemClick(activity, resultsBean);
     }
 }

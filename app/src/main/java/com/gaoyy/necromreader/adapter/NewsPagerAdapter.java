@@ -84,6 +84,12 @@ public class NewsPagerAdapter extends FragmentStatePagerAdapter
             case R.string.android:
                 typeName="Android";
                 break;
+            case R.string.ios:
+                typeName="iOS";
+                break;
+            case R.string.front_web:
+                typeName="前端";
+                break;
         }
         return typeName;
     }

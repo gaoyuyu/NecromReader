@@ -30,9 +30,9 @@ public class PhotoPresenter implements PhotoContract.Presenter
     }
 
     @Override
-    public void loadPhotoData(final int pageNum)
+    public void loadPhotoData(String type,final int pageNum)
     {
-        Call<PhotoInfo> call = RetrofitService.sGankService.getPhotosData(pageNum);
+        Call<PhotoInfo> call = RetrofitService.sGankService.getPhotosData(type,pageNum);
         call.enqueue(new Callback<PhotoInfo>()
         {
             @Override

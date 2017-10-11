@@ -1,19 +1,18 @@
-package com.gaoyy.necromreader.gankio.photo;
+package com.gaoyy.necromreader.gankio.tech;
 
-import android.content.Context;
-
-import com.gaoyy.necromreader.api.bean.PhotoInfo;
+import com.gaoyy.necromreader.api.bean.TechInfo;
 import com.gaoyy.necromreader.base.BasePresenter;
 import com.gaoyy.necromreader.base.BaseView;
 
 import java.util.List;
 
 /**
- * Created by gaoyy on 2017/3/23 0023.
+ * Created by gaoyy on 2017/10/11 0011.
  */
 
-public class PhotoContract
+public class TechContract
 {
+
     interface View extends BaseView<Presenter>
     {
         void showLoading();
@@ -24,7 +23,7 @@ public class PhotoContract
 
         void refreshing();
 
-        void showPhotoData(List<PhotoInfo.ResultsBean> list);
+        void showTechData(List<TechInfo.ResultsBean> list);
 
         boolean isActive();
     }
@@ -32,14 +31,10 @@ public class PhotoContract
     interface Presenter extends BasePresenter
     {
         /**
-         * 加载图片
-         *
          * @param pageNum 当前页数
          * @param type    标签类型
          */
-        void loadPhotoData(String type, int pageNum);
+        void loadTechData(String type, int pageNum);
 
-
-        void onItemClick(Context context, PhotoInfo.ResultsBean resultsBean);
     }
 }

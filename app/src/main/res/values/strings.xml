@@ -30,4 +30,6 @@
     <string name="download_finish">已下载</string>
     <string name="setting_for">设置为壁纸</string>
     <string name="my_download">我的下载</string>
+    <string name="ios">iOS</string>
+    <string name="front_web">前端</string>
 </resources>

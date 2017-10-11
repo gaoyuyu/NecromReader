@@ -12,9 +12,12 @@ import android.view.View;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.NewsPagerAdapter;
+import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.base.BaseFragment;
 import com.gaoyy.necromreader.gankio.photo.PhotoFragment;
 import com.gaoyy.necromreader.gankio.photo.PhotoPresenter;
+import com.gaoyy.necromreader.gankio.tech.TechFragment;
+import com.gaoyy.necromreader.gankio.tech.TechPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,14 +86,27 @@ public class GankFragment extends BaseFragment implements GankContract.View
         super.configViews();
         DrawerLayout drawer = (DrawerLayout) activity.findViewById(R.id.main_drawer_layout);
         gankToolbar.setNavigationIcon(R.drawable.ic_menu_bar);
+        Log.e(Constant.TAG,"-length->"+tabType.length);
         for (int i = 0; i < tabType.length; i++)
         {
             Bundle bundle = new Bundle();
-            PhotoFragment fragment = PhotoFragment.newInstance();
             bundle.putInt("type",tabType[i]);
-            fragment.setArguments(bundle);
-            fragmentList.add(i, fragment);
-            new PhotoPresenter(fragment);
+            if(tabType[i] == R.string.photo)
+            {
+                PhotoFragment fragment = PhotoFragment.newInstance();
+                fragment.setArguments(bundle);
+                fragmentList.add(i, fragment);
+                new PhotoPresenter(fragment);
+            }
+            else
+            {
+                TechFragment fragment = TechFragment.newInstance();
+                fragment.setArguments(bundle);
+                fragmentList.add(i, fragment);
+                new TechPresenter(fragment);
+            }
+
+
         }
 
         newsPagerAdapter = new NewsPagerAdapter(activity, getChildFragmentManager(), tabType, fragmentList);

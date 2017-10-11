@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 homeFragment.setUserVisibleHint(true);
             }
             currentFragment = homeFragment;
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),homeFragment,R.id.main_content);
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), homeFragment, R.id.main_content);
         }
         //初始化MainPresenter
         new MainPresenter(homeFragment);
@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
                 break;
             case R.id.nav_gank:
-                int[] gankType = {R.string.photo, R.string.android};
+                int[] gankType = {R.string.android, R.string.ios, R.string.front_web, R.string.photo};
                 if (gankFragment == null)
                 {
                     gankFragment = GankFragment.newInstance();
@@ -160,7 +160,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
 
             case R.id.nav_my_download:
-                Intent myDownload  = new Intent(MainActivity.this, MyDownloadActivity.class);
+                Intent myDownload = new Intent(MainActivity.this, MyDownloadActivity.class);
                 startActivity(myDownload);
                 break;
         }

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_tech_cardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:stateListAnimator="@drawable/lift_on_touch"
+    app:cardCornerRadius="5dp"
+    app:contentPadding="2dp"
+    app:cardElevation="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_tech_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="最近在给某某银行做项目的时，涉及到了数据埋点，性能监控等问题，那我们起先想到的有两种方案，方案之一就是借助第三方，比如友盟、Bugly等，由于项目是部署在银行的网络框架之内的，所以该方案不可行。"
+            android:textColor="@color/item_text_color"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:id="@+id/item_tech_img_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="2dp"
+                android:src="@color/colorPrimary"/>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="2dp"
+                android:src="@color/colorPrimary"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="3dp">
+
+            <TextView
+                android:id="@+id/item_tech_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:drawableLeft="@drawable/ic_person_gray"
+                android:drawablePadding="5dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Thunder Bouble"
+                android:textColor="@color/item_text_color"/>
+
+            <TextView
+                android:id="@+id/item_tech_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_camera_gray"
+                android:drawablePadding="5dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="web"
+                android:textColor="@color/item_text_color"/>
+            <TextView
+                android:id="@+id/item_tech_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="5dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="right"
+                android:padding="2dp"
+                android:text="2017-10-11"
+                />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>
+

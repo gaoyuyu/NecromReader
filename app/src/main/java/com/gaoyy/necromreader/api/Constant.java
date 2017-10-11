@@ -7,7 +7,7 @@ public class Constant
     public static final String NEWS_URL="http://v.juhe.cn/toutiao/index";
     public static final String URL_NEWS_BASE="http://v.juhe.cn/toutiao/";
 
-    public static final String URL_GANK_PHOTO_BASE="http://gank.io/api/data/福利/";
+    public static final String URL_GANK_PHOTO_BASE="http://gank.io/api/data/";
 
 
     public static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1000;
