@@ -1,5 +1,7 @@
 package com.gaoyy.necromreader.gankio.tech;
 
+import android.content.Context;
+
 import com.gaoyy.necromreader.api.bean.TechInfo;
 import com.gaoyy.necromreader.base.BasePresenter;
 import com.gaoyy.necromreader.base.BaseView;
@@ -35,6 +37,13 @@ public class TechContract
          * @param type    标签类型
          */
         void loadTechData(String type, int pageNum);
+
+        /**
+         *  item click
+         * @param context
+         * @param tech
+         */
+        void onItemClick(Context context,TechInfo.ResultsBean tech);
 
     }
 }

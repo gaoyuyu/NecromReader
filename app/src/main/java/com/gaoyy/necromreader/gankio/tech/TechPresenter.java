@@ -1,7 +1,11 @@
 package com.gaoyy.necromreader.gankio.tech;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.gaoyy.necromreader.api.RetrofitService;
 import com.gaoyy.necromreader.api.bean.TechInfo;
+import com.gaoyy.necromreader.newsdetail.NewsDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +65,16 @@ public class TechPresenter implements  TechContract.Presenter
             }
         });
 
+    }
+
+    @Override
+    public void onItemClick(Context context, TechInfo.ResultsBean tech)
+    {
+        Intent intent = new Intent();
+        intent.putExtra("title", tech.getDesc());
+        intent.putExtra("url", tech.getUrl());
+        intent.setClass(context, NewsDetailActivity.class);
+        context.startActivity(intent);
     }
 
     @Override

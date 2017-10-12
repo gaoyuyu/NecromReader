@@ -19,7 +19,7 @@ import com.gaoyy.necromreader.util.CommonUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TechFragment extends BaseFragment implements TechContract.View, SwipeRefreshLayout.OnRefreshListener
+public class TechFragment extends BaseFragment implements TechContract.View, SwipeRefreshLayout.OnRefreshListener, TechListAdapter.OnItemClickListener
 {
     private static final String LOG_TAG = TechFragment.class.getSimpleName();
     private SwipeRefreshLayout techSwipeRefreshLayout;
@@ -115,6 +115,8 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
 
             }
         });
+
+        techListAdapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -175,5 +177,12 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
         techSwipeRefreshLayout.setRefreshing(true);
         Log.i(Constant.TAG, "下拉刷新pageNum-->" + pageNum);
         mTechPresenter.loadTechData(tabType, pageNum);
+    }
+
+    @Override
+    public void onItemClick(View view, int position)
+    {
+        TechInfo.ResultsBean tech = (TechInfo.ResultsBean) view.getTag();
+        mTechPresenter.onItemClick(getActivity(),tech);
     }
 }

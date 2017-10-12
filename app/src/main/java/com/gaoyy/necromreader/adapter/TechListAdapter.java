@@ -1,6 +1,7 @@
 package com.gaoyy.necromreader.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.TechInfo;
+import com.gaoyy.necromreader.bigphoto.BigPhotoActivity;
+import com.gaoyy.necromreader.util.CommonUtils;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParsePosition;
@@ -30,6 +33,19 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context context;
     private LayoutInflater inflater;
     private List<TechInfo.ResultsBean> data;
+
+    private OnItemClickListener onItemClickListener;
+
+
+    public interface OnItemClickListener
+    {
+        void onItemClick(View view, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener)
+    {
+        this.onItemClickListener = listener;
+    }
 
     public TechListAdapter(Context context, List<TechInfo.ResultsBean> data)
     {
@@ -51,6 +67,9 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     {
         TechViewHolder techViewHolder = (TechViewHolder) holder;
         TechInfo.ResultsBean tech = data.get(position);
+
+
+        techViewHolder.itemTechCardview.setTag(tech);
         techViewHolder.itemTechTitle.setText(tech.getDesc());
         techViewHolder.itemTechAuthor.setText(tech.getWho());
 
@@ -61,7 +80,7 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         techViewHolder.itemTechDate.setText(date);
         techViewHolder.itemTechSource.setText(tech.getSource());
 
-        List<String> imgs = tech.getImages();
+        final List<String> imgs = tech.getImages();
         techViewHolder.itemTechImgLayout.removeAllViews();
         if (imgs == null)
         {
@@ -74,6 +93,19 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             for (int i = 0; i < imgs.size(); i++)
             {
                 ImageView imageView = new ImageView(context);
+                final int finalI = i;
+                imageView.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        CommonUtils.showToast(context, finalI+"");
+                        Intent intent = new Intent(context, BigPhotoActivity.class);
+                        intent.putExtra("url",imgs.get(finalI));
+                        intent.putExtra("name","");
+                        context.startActivity(intent);
+                    }
+                });
                 imageView.setLayoutParams(new LinearLayout.LayoutParams(300, 300));  //设置图片宽高
                 techViewHolder.itemTechImgLayout.addView(imageView); //动态添加图片
                 Picasso.with(context)
@@ -82,6 +114,12 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .into(imageView);
             }
         }
+
+        if (onItemClickListener != null)
+        {
+            techViewHolder.itemTechCardview.setOnClickListener(new BasicOnClickListener(techViewHolder));
+        }
+
     }
 
     @Override
@@ -100,7 +138,6 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static class TechViewHolder extends RecyclerView.ViewHolder
     {
-
         private CardView itemTechCardview;
         private TextView itemTechTitle;
         private LinearLayout itemTechImgLayout;
@@ -118,7 +155,6 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             itemTechDate = (TextView) itemView.findViewById(R.id.item_tech_date);
         }
 
-
         public TechViewHolder(View itemView)
         {
             super(itemView);
@@ -126,6 +162,26 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    private class BasicOnClickListener implements View.OnClickListener
+    {
+        private TechViewHolder techViewHolder;
+
+        public BasicOnClickListener(TechViewHolder techViewHolder)
+        {
+            this.techViewHolder = techViewHolder;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            switch (v.getId())
+            {
+                case R.id.item_tech_cardview:
+                    onItemClickListener.onItemClick(techViewHolder.itemTechCardview, techViewHolder.getLayoutPosition());
+                    break;
+            }
+        }
+    }
 
 }
 

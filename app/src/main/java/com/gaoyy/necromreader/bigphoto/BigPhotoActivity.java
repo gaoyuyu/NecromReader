@@ -150,65 +150,77 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
         String url = getIntent().getStringExtra("url");
         String name = getIntent().getStringExtra("name");
 
-
-        downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        request = new DownloadManager.Request(Uri.parse(url));
-
-        //指定在WIFI状态下，执行下载操作。
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-        //指定在MOBILE状态下，执行下载操作
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE);
-
-        request.setMimeType("image/*");
-
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-        //创建目录
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdir();
-
-        //设置文件存放路径
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS + Constant.PIC_PATH, name);
-
-        String imagePath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString() + Constant.PIC_PATH;
-
-        Log.i(Constant.TAG, "Downloads Path->" + imagePath);
-
-        imageFile = new File(imagePath, name);
-
-        Log.i(Constant.TAG, "exists ==>" + imageFile.exists());
-
-        if (imageFile.exists())
+        if (name.equals(""))
         {
-            //文件已下载，加载本地图片
-            bigPhotoDownload.setVisibility(View.GONE);
-            bigPhotoDownloading.setVisibility(View.GONE);
-            bigPhotoDownloadFinish.setVisibility(View.VISIBLE);
-
-            Picasso.with(this)
-                    .load(imageFile)
-                    .fit()
-                    .into(bigImg);
-        }
-        else
-        {
-            //文件未下载，加载网络图片
-            bigPhotoDownload.setVisibility(View.VISIBLE);
-            bigPhotoDownloading.setVisibility(View.GONE);
-            bigPhotoDownloadFinish.setVisibility(View.GONE);
-
+            bigPhotoTool.setVisibility(View.GONE);
             Picasso.with(this)
                     .load(url)
                     .fit()
                     .into(bigImg);
+
         }
+        else
+        {
+            bigPhotoTool.setVisibility(View.VISIBLE);
+            downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            request = new DownloadManager.Request(Uri.parse(url));
 
+            //指定在WIFI状态下，执行下载操作。
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+            //指定在MOBILE状态下，执行下载操作
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE);
+
+            request.setMimeType("image/*");
+
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+            //创建目录
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdir();
+
+            //设置文件存放路径
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS + Constant.PIC_PATH, name);
+
+            String imagePath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString() + Constant.PIC_PATH;
+
+            Log.i(Constant.TAG, "Downloads Path->" + imagePath);
+
+            imageFile = new File(imagePath, name);
+
+            Log.i(Constant.TAG, "exists ==>" + imageFile.exists());
+
+            if (imageFile.exists())
+            {
+                //文件已下载，加载本地图片
+                bigPhotoDownload.setVisibility(View.GONE);
+                bigPhotoDownloading.setVisibility(View.GONE);
+                bigPhotoDownloadFinish.setVisibility(View.VISIBLE);
+
+                Picasso.with(this)
+                        .load(imageFile)
+                        .fit()
+                        .into(bigImg);
+            }
+            else
+            {
+                //文件未下载，加载网络图片
+                bigPhotoDownload.setVisibility(View.VISIBLE);
+                bigPhotoDownloading.setVisibility(View.GONE);
+                bigPhotoDownloadFinish.setVisibility(View.GONE);
+
+                Picasso.with(this)
+                        .load(url)
+                        .fit()
+                        .into(bigImg);
+            }
+
+
+
+            //设置WaveView不可见，alpha=0
+            waveView.setAlpha(0f);
+
+            setTimer();
+        }
         bigImg.enable();
-
-        //设置WaveView不可见，alpha=0
-        waveView.setAlpha(0f);
-
-        setTimer();
-
     }
 
     /**

@@ -34,7 +34,7 @@ public class MyApplication extends Application
                 .memoryCache(new LruCache(10 << 20))
                 .defaultBitmapConfig(Bitmap.Config.RGB_565)
                 .downloader(new MyDownloader())
-                .indicatorsEnabled(true)
+                .indicatorsEnabled(false)
                 .build();
         Picasso.setSingletonInstance(picasso);
     }

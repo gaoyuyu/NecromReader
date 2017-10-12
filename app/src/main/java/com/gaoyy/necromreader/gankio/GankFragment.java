@@ -8,7 +8,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.NewsPagerAdapter;
@@ -38,6 +42,12 @@ public class GankFragment extends BaseFragment implements GankContract.View
     private List<Fragment> fragmentList = new ArrayList<>();
     private NewsPagerAdapter newsPagerAdapter;
     private GankContract.Presenter mGankPresenter;
+
+
+    private ImageView gankSortImg;
+
+
+
 
     public GankFragment()
     {
@@ -71,6 +81,8 @@ public class GankFragment extends BaseFragment implements GankContract.View
         gankToolbar = (Toolbar) rootView.findViewById(R.id.gank_toolbar);
         gankTablayout = (TabLayout) rootView.findViewById(R.id.gank_tablayout);
         gankViewpager = (ViewPager) rootView.findViewById(R.id.gank_viewpager);
+        gankViewpager = (ViewPager) rootView.findViewById(R.id.gank_viewpager);
+        gankSortImg = (ImageView) rootView.findViewById(R.id.gank_sort_img);
     }
 
 
@@ -137,6 +149,28 @@ public class GankFragment extends BaseFragment implements GankContract.View
                 {
                     drawer.openDrawer(GravityCompat.START);
                 }
+            }
+        });
+
+        final View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_layout, null);
+        final PopupWindow popWnd = new PopupWindow(getActivity());
+        popWnd.setContentView(contentView);
+        popWnd.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        popWnd.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        gankSortImg.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if(popWnd.isShowing())
+                {
+                    popWnd.dismiss();
+                }
+                else
+                {
+                    popWnd.showAsDropDown(gankTablayout);
+                }
+
             }
         });
     }
