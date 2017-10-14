@@ -14,8 +14,13 @@ import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.base.BaseActivity;
 import com.gaoyy.necromreader.gankio.GankFragment;
 import com.gaoyy.necromreader.gankio.GankPresenter;
+import com.gaoyy.necromreader.greendao.entity.GankTag;
 import com.gaoyy.necromreader.mydownload.MyDownloadActivity;
 import com.gaoyy.necromreader.util.ActivityUtils;
+import com.gaoyy.necromreader.util.DBUtils;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -145,13 +150,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
                 break;
             case R.id.nav_gank:
-                int[] gankType = {R.string.android, R.string.ios, R.string.front_web, R.string.photo};
+                List<GankTag> gankTagList =  DBUtils.getGankTagList(this);
                 if (gankFragment == null)
                 {
                     gankFragment = GankFragment.newInstance();
                     Bundle bundle = new Bundle();
-                    bundle.putString("title", "干活集中营");
-                    bundle.putIntArray("tabType", gankType);
+                    bundle.putString("title", "干货集中营");
+                    bundle.putSerializable("tabType", (Serializable) gankTagList);
                     gankFragment.setArguments(bundle);
                     gankFragment.setUserVisibleHint(true);
                 }

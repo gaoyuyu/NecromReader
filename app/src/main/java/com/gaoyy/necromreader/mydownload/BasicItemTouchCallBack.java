@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gaoyy.necromreader.adapter.DownloadListAdapter;
+import com.gaoyy.necromreader.adapter.ItemTouchHelperAdapter;
 
 /**
  * Created by gaoyy on 2017/10/9 0009.

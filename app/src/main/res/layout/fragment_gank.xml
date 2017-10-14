@@ -43,14 +43,21 @@
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/colorPrimary"
                 app:tabSelectedTextColor="@color/colorPrimary"
-                app:tabTextColor="#646262">
+                app:tabTextColor="@color/item_text_tab_color">
             </android.support.design.widget.TabLayout>
+
+            <View
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="0.5dp"
+                android:background="@color/item_text_tab_color"
+                android:layout_height="match_parent"/>
 
             <ImageView
                 android:id="@+id/gank_sort_img"
                 android:layout_width="0dp"
                 android:layout_weight="0.1"
-                android:src="@drawable/ic_loupe_gray"
+                android:src="@mipmap/ic_plus_gray"
                 android:padding="5dp"
                 android:layout_height="match_parent"/>
         </LinearLayout>

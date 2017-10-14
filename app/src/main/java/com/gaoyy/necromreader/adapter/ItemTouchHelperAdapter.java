@@ -1,4 +1,4 @@
-package com.gaoyy.necromreader.mydownload;
+package com.gaoyy.necromreader.adapter;
 
 /**
  * Created by gaoyy on 2017/10/9 0009.

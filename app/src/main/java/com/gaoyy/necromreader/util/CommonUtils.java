@@ -7,6 +7,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
+import com.gaoyy.necromreader.R;
+
 /**
  * Created by gaoyy on 2017/7/23 0023.
  */
@@ -81,5 +83,57 @@ public class CommonUtils
         {
             return false;
         }
+    }
+
+
+    public static String getTypeName(int type)
+    {
+        String typeName = "";
+        switch (type)
+        {
+            case R.string.top:
+                typeName = "头条";
+                break;
+            case R.string.shehui:
+                typeName = "社会";
+                break;
+            case R.string.guonei:
+                typeName = "国内";
+                break;
+            case R.string.guoji:
+                typeName = "国际";
+                break;
+            case R.string.yule:
+                typeName = "娱乐";
+                break;
+            case R.string.tiyu:
+                typeName = "体育";
+                break;
+            case R.string.junshi:
+                typeName = "军事";
+                break;
+            case R.string.keji:
+                typeName = "科技";
+                break;
+            case R.string.caijing:
+                typeName = "财经";
+                break;
+            case R.string.shishang:
+                typeName = "时尚";
+                break;
+            case R.string.photo:
+                typeName="福利";
+                break;
+            case R.string.android:
+                typeName="Android";
+                break;
+            case R.string.ios:
+                typeName="iOS";
+                break;
+            case R.string.front_web:
+                typeName="前端";
+                break;
+        }
+        return typeName;
     }
 }

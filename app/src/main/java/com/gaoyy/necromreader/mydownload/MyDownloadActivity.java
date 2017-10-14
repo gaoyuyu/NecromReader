@@ -112,11 +112,14 @@ public class MyDownloadActivity extends BaseActivity implements SwipeRefreshLayo
         String imagePath = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString() + Constant.PIC_PATH;
         File f = new File(imagePath);
         File[] files = f.listFiles();// 列出所有文件
-        for (File file : files)
+        if(files !=null&&files.length!=0)
         {
-            if (file.isFile())
+            for (File file : files)
             {
-                fileList.add(file.getName());
+                if (file.isFile())
+                {
+                    fileList.add(file.getName());
+                }
             }
         }
         return fileList;

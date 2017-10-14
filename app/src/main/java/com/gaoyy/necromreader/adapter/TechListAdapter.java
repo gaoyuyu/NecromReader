@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
-import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.TechInfo;
 import com.gaoyy.necromreader.bigphoto.BigPhotoActivity;
-import com.gaoyy.necromreader.util.CommonUtils;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParsePosition;
@@ -89,9 +86,10 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else
         {
             techViewHolder.itemTechImgLayout.setVisibility(View.VISIBLE);
-            Log.d(Constant.TAG,position+"==imgs==>"+imgs.size());
+
             for (int i = 0; i < imgs.size(); i++)
             {
+
                 ImageView imageView = new ImageView(context);
                 final int finalI = i;
                 imageView.setOnClickListener(new View.OnClickListener()
@@ -99,10 +97,9 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     @Override
                     public void onClick(View view)
                     {
-                        CommonUtils.showToast(context, finalI+"");
                         Intent intent = new Intent(context, BigPhotoActivity.class);
-                        intent.putExtra("url",imgs.get(finalI));
-                        intent.putExtra("name","");
+                        intent.putExtra("url", imgs.get(finalI));
+                        intent.putExtra("name", "");
                         context.startActivity(intent);
                     }
                 });
@@ -110,6 +107,8 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 techViewHolder.itemTechImgLayout.addView(imageView); //动态添加图片
                 Picasso.with(context)
                         .load(imgs.get(i))
+                        .placeholder(R.mipmap.loading_bg)
+                        .error(R.mipmap.error_bg)
                         .fit()
                         .into(imageView);
             }

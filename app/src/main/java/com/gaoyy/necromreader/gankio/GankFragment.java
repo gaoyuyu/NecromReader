@@ -6,31 +6,42 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.NewsPagerAdapter;
+import com.gaoyy.necromreader.adapter.TagListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.base.BaseFragment;
 import com.gaoyy.necromreader.gankio.photo.PhotoFragment;
 import com.gaoyy.necromreader.gankio.photo.PhotoPresenter;
 import com.gaoyy.necromreader.gankio.tech.TechFragment;
 import com.gaoyy.necromreader.gankio.tech.TechPresenter;
+import com.gaoyy.necromreader.greendao.entity.GankTag;
+import com.gaoyy.necromreader.util.CommonUtils;
+import com.gaoyy.necromreader.util.DBUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by gaoyy on 2017/3/19 0019.
  */
 
-public class GankFragment extends BaseFragment implements GankContract.View
+public class GankFragment extends BaseFragment implements GankContract.View, View.OnClickListener
 {
 
     private static final String LOG_TAG = GankFragment.class.getSimpleName();
@@ -43,10 +54,20 @@ public class GankFragment extends BaseFragment implements GankContract.View
     private NewsPagerAdapter newsPagerAdapter;
     private GankContract.Presenter mGankPresenter;
 
-
     private ImageView gankSortImg;
 
 
+    private TextView popupTagTv;
+    private AppCompatButton popupSortBtn;
+    private AppCompatButton popupFinishBtn;
+    private TextView popupTagSubTv;
+    private RecyclerView popupRv;
+
+    private PopupWindow popupWindow;
+
+    private TagListAdapter tagListAdapter;
+
+    public static final int TAG_COLUMN = 2;
 
 
     public GankFragment()
@@ -65,7 +86,21 @@ public class GankFragment extends BaseFragment implements GankContract.View
     {
         super.getParamsData();
         title = getArguments().getString("title");
-        tabType = getArguments().getIntArray("tabType");
+        List<GankTag> gankTagList = (List<GankTag>) getArguments().getSerializable("tabType");
+
+        initTabType(gankTagList);
+    }
+
+    /**
+     * 初始化标签数据
+     */
+    private void initTabType(List<GankTag> gankTagList)
+    {
+        tabType = new int[gankTagList.size()];
+        for (int i = 0; i < tabType.length; i++)
+        {
+            tabType[i] = gankTagList.get(i).getTagId();
+        }
     }
 
     @Override
@@ -96,14 +131,37 @@ public class GankFragment extends BaseFragment implements GankContract.View
     protected void configViews()
     {
         super.configViews();
-        DrawerLayout drawer = (DrawerLayout) activity.findViewById(R.id.main_drawer_layout);
         gankToolbar.setNavigationIcon(R.drawable.ic_menu_bar);
-        Log.e(Constant.TAG,"-length->"+tabType.length);
+        Log.e(Constant.TAG, "-length->" + tabType.length);
+        setUpViewPager(tabType);
+    }
+
+    /**
+     * 设置viewpager
+     *
+     * @param tabType
+     */
+    private void setUpViewPager(int[] tabType)
+    {
+        setUpFragmentList(tabType);
+        newsPagerAdapter = new NewsPagerAdapter(activity, getChildFragmentManager(), tabType, fragmentList);
+        gankViewpager.setAdapter(newsPagerAdapter);
+        gankViewpager.setOffscreenPageLimit(1);
+        gankTablayout.setBackgroundColor(getResources().getColor(android.R.color.white));
+        gankTablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        gankTablayout.setupWithViewPager(gankViewpager);
+        gankTablayout.setTabsFromPagerAdapter(newsPagerAdapter);
+    }
+
+    private void setUpFragmentList(int[] tabType)
+    {
+        Log.d(Constant.TAG, "tabType-->" + Arrays.toString(tabType));
+        fragmentList.clear();
         for (int i = 0; i < tabType.length; i++)
         {
             Bundle bundle = new Bundle();
-            bundle.putInt("type",tabType[i]);
-            if(tabType[i] == R.string.photo)
+            bundle.putInt("type", tabType[i]);
+            if (tabType[i] == R.string.photo)
             {
                 PhotoFragment fragment = PhotoFragment.newInstance();
                 fragment.setArguments(bundle);
@@ -117,17 +175,7 @@ public class GankFragment extends BaseFragment implements GankContract.View
                 fragmentList.add(i, fragment);
                 new TechPresenter(fragment);
             }
-
-
         }
-
-        newsPagerAdapter = new NewsPagerAdapter(activity, getChildFragmentManager(), tabType, fragmentList);
-        gankViewpager.setAdapter(newsPagerAdapter);
-        gankViewpager.setOffscreenPageLimit(1);
-        gankTablayout.setBackgroundColor(getResources().getColor(android.R.color.white));
-        gankTablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        gankTablayout.setupWithViewPager(gankViewpager);
-        gankTablayout.setTabsFromPagerAdapter(newsPagerAdapter);
     }
 
     @Override
@@ -152,25 +200,89 @@ public class GankFragment extends BaseFragment implements GankContract.View
             }
         });
 
+        setUpSortPopupWindow();
+    }
+
+    private void setUpSortPopupWindow()
+    {
         final View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_layout, null);
-        final PopupWindow popWnd = new PopupWindow(getActivity());
-        popWnd.setContentView(contentView);
-        popWnd.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        popWnd.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        popupTagTv = (TextView) contentView.findViewById(R.id.popup_tag_tv);
+        popupSortBtn = (AppCompatButton) contentView.findViewById(R.id.popup_sort_btn);
+        popupFinishBtn = (AppCompatButton) contentView.findViewById(R.id.popup_finish_btn);
+        popupTagSubTv = (TextView) contentView.findViewById(R.id.popup_tag_sub_tv);
+        popupRv = (RecyclerView) contentView.findViewById(R.id.popup_rv);
+
+        popupWindow = new PopupWindow(getActivity());
+        popupWindow.setContentView(contentView);
+        popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        popupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+
+        popupSortBtn.setOnClickListener(this);
+        popupFinishBtn.setOnClickListener(this);
+
+
+        List<GankTag> gankTagList = DBUtils.getGankTagList(getActivity());
+        tagListAdapter = new TagListAdapter(getActivity(), gankTagList);
+        popupRv.setAdapter(tagListAdapter);
+
+
+        GridLayoutManager mgr = new GridLayoutManager(getActivity(), TAG_COLUMN);
+        popupRv.setLayoutManager(mgr);
+
+
+        ItemTouchHelper.Callback callback = new TagItemTouchCallBack(tagListAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(popupRv);
+
+
+        tagListAdapter.setOnItemLongClickListener(new TagListAdapter.OnItemClickListener()
+        {
+            @Override
+            public void onItemLongClick(View view, int position)
+            {
+                switch (view.getId())
+                {
+                    case R.id.item_popup_layout:
+                        popupTagSubTv.setVisibility(View.VISIBLE);
+                        popupSortBtn.setVisibility(View.INVISIBLE);
+                        popupFinishBtn.setVisibility(View.VISIBLE);
+                        tagListAdapter.toggleModel(true);
+                        break;
+                }
+            }
+
+            @Override
+            public void onItemClick(View view, int position)
+            {
+                switch (view.getId())
+                {
+                    case R.id.item_popup_delete:
+                        int tag = (int) view.getTag();
+                        DBUtils.deleteTagBySort(getActivity(),tag);
+                        List<GankTag> gankTagList = DBUtils.getGankTagList(getActivity());
+                        //根据sort排序，更新标签列表
+                        Collections.sort(gankTagList);
+                        tagListAdapter.update(gankTagList);
+                        tagListAdapter.toggleModel(true);
+                        break;
+                }
+            }
+        });
+
+
         gankSortImg.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if(popWnd.isShowing())
+                if (popupWindow.isShowing())
                 {
-                    popWnd.dismiss();
+                    popupWindow.dismiss();
                 }
                 else
                 {
-                    popWnd.showAsDropDown(gankTablayout);
+                    popupWindow.showAsDropDown(gankTablayout);
                 }
-
             }
         });
     }
@@ -179,7 +291,7 @@ public class GankFragment extends BaseFragment implements GankContract.View
     public void onResume()
     {
         super.onResume();
-        Log.i(LOG_TAG,"onResume");
+        Log.i(LOG_TAG, "onResume");
         mGankPresenter.start();
     }
 
@@ -200,4 +312,50 @@ public class GankFragment extends BaseFragment implements GankContract.View
             mGankPresenter = presenter;
         }
     }
+
+    @Override
+    public void onClick(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.popup_sort_btn:
+                popupTagSubTv.setVisibility(View.VISIBLE);
+                popupSortBtn.setVisibility(View.INVISIBLE);
+                popupFinishBtn.setVisibility(View.VISIBLE);
+
+                tagListAdapter.toggleModel(true);
+
+                break;
+            case R.id.popup_finish_btn:
+                popupTagSubTv.setVisibility(View.INVISIBLE);
+                popupSortBtn.setVisibility(View.VISIBLE);
+                popupFinishBtn.setVisibility(View.INVISIBLE);
+
+
+
+
+
+                List<GankTag> gankTagList = DBUtils.getGankTagList(getActivity());
+                //根据sort排序，更新标签列表
+                Collections.sort(gankTagList);
+                tagListAdapter.update(gankTagList);
+                tagListAdapter.toggleModel(false);
+                //更新viewpager和tablayout
+                initTabType(gankTagList);
+                setUpFragmentList(tabType);
+                newsPagerAdapter.update(fragmentList);
+                Log.d(Constant.TAG, "-->" + fragmentList.toString());
+                gankTablayout.removeAllTabs();
+                for (int i = 0; i < tabType.length; i++)
+                {
+                    gankTablayout.addTab(gankTablayout.newTab().setText(CommonUtils.getTypeName(tabType[i])));
+                }
+                //popupWindow消失
+                popupWindow.dismiss();
+
+                break;
+        }
+    }
+
+
 }

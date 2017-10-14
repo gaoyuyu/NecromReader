@@ -2,12 +2,69 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <ImageView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+
+        <TextView
+            android:id="@+id/popup_tag_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/popup_sort_btn"
+            android:layout_alignBottom="@+id/popup_sort_btn"
+            android:layout_alignParentStart="true"
+            android:text="我的标签"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/popup_sort_btn"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="排序/删除"
+            />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/popup_finish_btn"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="完成"
+            android:visibility="invisible"
+            />
+
+        <TextView
+            android:id="@+id/popup_tag_sub_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:visibility="invisible"
+            android:layout_toEndOf="@+id/popup_tag_tv"
+            android:text="（拖动标签可排序）"/>
+
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/popup_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@mipmap/header_bg"/>
+        android:fadeScrollbars="true"
+        android:scrollbars="vertical"
+        >
+    </android.support.v7.widget.RecyclerView>
+
 
 </LinearLayout>

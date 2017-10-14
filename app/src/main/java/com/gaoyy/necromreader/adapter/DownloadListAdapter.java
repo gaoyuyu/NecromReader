@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.Constant;
-import com.gaoyy.necromreader.mydownload.ItemTouchHelperAdapter;
 import com.gaoyy.necromreader.util.CommonUtils;
 import com.squareup.picasso.Picasso;
 

@@ -14,4 +14,5 @@ public class Constant
 
     public static final String PIC_PATH = "/NecromReader";
 
+
 }
