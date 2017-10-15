@@ -12,8 +12,9 @@ import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.Constant;
-import com.gaoyy.necromreader.greendao.entity.GankTag;
+import com.gaoyy.necromreader.greendao.entity.NewTag;
 import com.gaoyy.necromreader.util.CommonUtils;
+import com.gaoyy.necromreader.util.DBUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,25 +23,48 @@ import java.util.List;
  * Created by gaoyy on 2017/10/14 0014.
  */
 
-public class TagListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemTouchHelperAdapter
+public class NewTagListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemTouchHelperAdapter
 {
     private Context context;
     private LayoutInflater inflater;
-    private List<GankTag> data;
+    private List<NewTag> data;
 
     private OnItemClickListener onItemClickListener;
 
     @Override
     public void onItemMove(int fromPosition, int toPosition)
     {
-        Log.d(Constant.TAG, "onItemMove-swap前->" + data.toString());
-        //交换位置
-        Collections.swap(data, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-        Log.d(Constant.TAG, "fromPosition-->" + fromPosition);
-        Log.d(Constant.TAG, "toPosition-->" + toPosition);
-        Log.d(Constant.TAG, "onItemMove-swap后->" + data.toString());
+        //保证list的排列和显示的位置一样
+        synchronized (this)
+        {
+            if (fromPosition > toPosition)
+            {
+                int count = fromPosition - toPosition;
+                for (int i = 0; i < count; i++)
+                {
+                    Collections.swap(data, fromPosition - i, fromPosition - i - 1);
+                }
+            }
+            if (fromPosition < toPosition)
+            {
+                int count = toPosition - fromPosition;
+                for (int i = 0; i < count; i++)
+                {
+                    Collections.swap(data, fromPosition + i, fromPosition + i + 1);
+                }
+            }
+            notifyItemMoved(fromPosition, toPosition);
+        }
 
+        Log.d(Constant.TAG,"move--"+data.toString());
+
+        //更新数据库
+        for(int i=0;i<data.size();i++)
+        {
+            DBUtils.updateNewTagById(context,data.get(i).getId(),i);
+        }
+
+        DBUtils.getNewTagList(context);
     }
 
     @Override
@@ -53,6 +77,7 @@ public class TagListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public interface OnItemClickListener
     {
         void onItemLongClick(View view, int position);
+
         void onItemClick(View view, int position);
     }
 
@@ -61,7 +86,7 @@ public class TagListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.onItemClickListener = listener;
     }
 
-    public TagListAdapter(Context context, List<GankTag> data)
+    public NewTagListAdapter(Context context, List<NewTag> data)
     {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -81,11 +106,11 @@ public class TagListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
         TagViewHolder tagViewHolder = (TagViewHolder) holder;
-        GankTag gankTag = data.get(position);
+        NewTag newTag = data.get(position);
         //设置删除的tag为sort字段值
-        tagViewHolder.itemPopupDelete.setTag(gankTag.getSort());
-        tagViewHolder.itemPopupTv.setText(CommonUtils.getTypeName(gankTag.getTagId()));
-        if (gankTag.isShowDelete())
+        tagViewHolder.itemPopupDelete.setTag(newTag.getSort());
+        tagViewHolder.itemPopupTv.setText(CommonUtils.getTypeName(newTag.getTagId()));
+        if (newTag.isShowDelete())
         {
             tagViewHolder.itemPopupDelete.setVisibility(View.VISIBLE);
         }
@@ -102,7 +127,7 @@ public class TagListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private class BasicOnClickListener implements View.OnLongClickListener,View.OnClickListener
+    private class BasicOnClickListener implements View.OnLongClickListener, View.OnClickListener
     {
         private TagViewHolder tagViewHolder;
 
@@ -161,7 +186,7 @@ public class TagListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      *
      * @param data
      */
-    public void update(List<GankTag> data)
+    public void update(List<NewTag> data)
     {
         this.data = data;
         notifyDataSetChanged();

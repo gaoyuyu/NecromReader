@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.NewsPagerAdapter;
-import com.gaoyy.necromreader.adapter.TagListAdapter;
+import com.gaoyy.necromreader.adapter.GankTagListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.base.BaseFragment;
 import com.gaoyy.necromreader.gankio.photo.PhotoFragment;
@@ -65,7 +65,7 @@ public class GankFragment extends BaseFragment implements GankContract.View, Vie
 
     private PopupWindow popupWindow;
 
-    private TagListAdapter tagListAdapter;
+    private GankTagListAdapter tagListAdapter;
 
     public static final int TAG_COLUMN = 2;
 
@@ -86,7 +86,7 @@ public class GankFragment extends BaseFragment implements GankContract.View, Vie
     {
         super.getParamsData();
         title = getArguments().getString("title");
-        List<GankTag> gankTagList = (List<GankTag>) getArguments().getSerializable("tabType");
+        List<GankTag> gankTagList = DBUtils.getGankTagList(getActivity());
 
         initTabType(gankTagList);
     }
@@ -222,7 +222,7 @@ public class GankFragment extends BaseFragment implements GankContract.View, Vie
 
 
         List<GankTag> gankTagList = DBUtils.getGankTagList(getActivity());
-        tagListAdapter = new TagListAdapter(getActivity(), gankTagList);
+        tagListAdapter = new GankTagListAdapter(getActivity(), gankTagList);
         popupRv.setAdapter(tagListAdapter);
 
 
@@ -235,7 +235,7 @@ public class GankFragment extends BaseFragment implements GankContract.View, Vie
         touchHelper.attachToRecyclerView(popupRv);
 
 
-        tagListAdapter.setOnItemLongClickListener(new TagListAdapter.OnItemClickListener()
+        tagListAdapter.setOnItemLongClickListener(new GankTagListAdapter.OnItemClickListener()
         {
             @Override
             public void onItemLongClick(View view, int position)
@@ -258,10 +258,10 @@ public class GankFragment extends BaseFragment implements GankContract.View, Vie
                 {
                     case R.id.item_popup_delete:
                         int tag = (int) view.getTag();
-                        DBUtils.deleteTagBySort(getActivity(),tag);
+                        DBUtils.deleteGankTagBySort(getActivity(),tag);
                         List<GankTag> gankTagList = DBUtils.getGankTagList(getActivity());
                         //根据sort排序，更新标签列表
-                        Collections.sort(gankTagList);
+//                        Collections.sort(gankTagList);
                         tagListAdapter.update(gankTagList);
                         tagListAdapter.toggleModel(true);
                         break;
@@ -330,10 +330,6 @@ public class GankFragment extends BaseFragment implements GankContract.View, Vie
                 popupTagSubTv.setVisibility(View.INVISIBLE);
                 popupSortBtn.setVisibility(View.VISIBLE);
                 popupFinishBtn.setVisibility(View.INVISIBLE);
-
-
-
-
 
                 List<GankTag> gankTagList = DBUtils.getGankTagList(getActivity());
                 //根据sort排序，更新标签列表

@@ -23,7 +23,7 @@ android {
 
 //greendao配置
 greendao {
-    schemaVersion 3
+    schemaVersion 4
     daoPackage 'com.gaoyy.necromreader.greendao.gen'
     targetGenDir 'src/main/java'
 }

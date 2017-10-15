@@ -6,8 +6,10 @@ import android.graphics.Bitmap;
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.RetrofitService;
 import com.gaoyy.necromreader.greendao.entity.GankTag;
+import com.gaoyy.necromreader.greendao.entity.NewTag;
 import com.gaoyy.necromreader.greendao.gen.DaoSession;
 import com.gaoyy.necromreader.greendao.gen.GankTagDao;
+import com.gaoyy.necromreader.greendao.gen.NewTagDao;
 import com.gaoyy.necromreader.util.DBUtils;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
@@ -41,8 +43,8 @@ public class MyApplication extends Application
      * 初始化
      */
     private void initDB()
-    {
-        DaoSession session = DBUtils.getDaoSession(this);
+    {        DaoSession session = DBUtils.getDaoSession(this);
+        //初始化gank_tag
         int[] gankType = {R.string.android, R.string.ios, R.string.front_web, R.string.photo};
         GankTagDao gankDao = session.getGankTagDao();
         gankDao.deleteAll();
@@ -53,6 +55,21 @@ public class MyApplication extends Application
         }
 
         DBUtils.getGankTagList(this);
+
+
+        //初始化new_tag
+        int[] newsType = {R.string.top, R.string.shehui, R.string.guonei, R.string.guoji,
+                R.string.yule, R.string.tiyu, R.string.junshi, R.string.keji, R.string.caijing, R.string.shishang};
+        NewTagDao newTagDao = session.getNewTagDao();
+        newTagDao.deleteAll();
+        for(int i=0;i<newsType.length;i++)
+        {
+            NewTag newTag = new NewTag(null,newsType[i],i,getResources().getString(newsType[i]));
+            newTagDao.insert(newTag);
+        }
+
+        DBUtils.getNewTagList(this);
+
     }
 
 

@@ -173,5 +173,36 @@
   2. tag排序/删除（未完成）
 
 
+ ## 2017.10.15
+
+ ***[update]***
+  1. tag排序/删除
+  2. 在处理拖拽Grid排列的列表时，要保证list的排列和显示的位置一样
+
+```Java
+        //保证list的排列和显示的位置一样
+        synchronized (this)
+        {
+            if (fromPosition > toPosition)
+            {
+                int count = fromPosition - toPosition;
+                for (int i = 0; i < count; i++)
+                {
+                    Collections.swap(data, fromPosition - i, fromPosition - i - 1);
+                }
+            }
+            if (fromPosition < toPosition)
+            {
+                int count = toPosition - fromPosition;
+                for (int i = 0; i < count; i++)
+                {
+                    Collections.swap(data, fromPosition + i, fromPosition + i + 1);
+                }
+            }
+            notifyItemMoved(fromPosition, toPosition);
+        }
+```
+
+
 
 

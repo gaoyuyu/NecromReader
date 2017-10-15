@@ -14,13 +14,8 @@ import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.base.BaseActivity;
 import com.gaoyy.necromreader.gankio.GankFragment;
 import com.gaoyy.necromreader.gankio.GankPresenter;
-import com.gaoyy.necromreader.greendao.entity.GankTag;
 import com.gaoyy.necromreader.mydownload.MyDownloadActivity;
 import com.gaoyy.necromreader.util.ActivityUtils;
-import com.gaoyy.necromreader.util.DBUtils;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -132,14 +127,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.nav_news:
                 if (!item.isChecked())
                 {
-                    int[] newsType = {R.string.top, R.string.shehui, R.string.guonei, R.string.guoji,
-                            R.string.yule, R.string.tiyu, R.string.junshi, R.string.keji, R.string.caijing, R.string.shishang};
                     if (homeFragment == null)
                     {
                         homeFragment = HomeFragment.newInstance();
                         Bundle bundle = new Bundle();
                         bundle.putString("title", "头条新闻");
-                        bundle.putIntArray("tabType", newsType);
                         homeFragment.setArguments(bundle);
                         homeFragment.setUserVisibleHint(true);
                     }
@@ -150,13 +142,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
                 break;
             case R.id.nav_gank:
-                List<GankTag> gankTagList =  DBUtils.getGankTagList(this);
                 if (gankFragment == null)
                 {
                     gankFragment = GankFragment.newInstance();
                     Bundle bundle = new Bundle();
                     bundle.putString("title", "干货集中营");
-                    bundle.putSerializable("tabType", (Serializable) gankTagList);
                     gankFragment.setArguments(bundle);
                     gankFragment.setUserVisibleHint(true);
                 }
