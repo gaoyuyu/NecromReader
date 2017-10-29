@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gaoyy.necromreader.adapter.DownloadListAdapter;
+import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.ItemTouchHelperAdapter;
+import com.gaoyy.necromreader.base.recycler.BaseViewHolder;
 
 /**
  * Created by gaoyy on 2017/10/9 0009.
@@ -59,8 +60,8 @@ public class BasicItemTouchCallBack extends ItemTouchHelper.Callback
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive)
     {
-        ImageView iv = ((DownloadListAdapter.DownloadViewHolder) viewHolder).itemDownloadSlideImg;
-        TextView tv = ((DownloadListAdapter.DownloadViewHolder) viewHolder).itemDownloadSlideText;
+        ImageView iv = ((BaseViewHolder) viewHolder).getView(R.id.item_download_slide_img);
+        TextView tv = ((BaseViewHolder) viewHolder).getView(R.id.item_download_slide_text);
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
         {
             if (Math.abs(dX) <= getSlideLimitation(viewHolder))
@@ -88,8 +89,8 @@ public class BasicItemTouchCallBack extends ItemTouchHelper.Callback
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
     {
         super.clearView(recyclerView, viewHolder);
-        ImageView iv = ((DownloadListAdapter.DownloadViewHolder) viewHolder).itemDownloadSlideImg;
-        TextView tv = ((DownloadListAdapter.DownloadViewHolder) viewHolder).itemDownloadSlideText;
+        ImageView iv = ((BaseViewHolder) viewHolder).getView(R.id.item_download_slide_img);
+        TextView tv = ((BaseViewHolder) viewHolder).getView(R.id.item_download_slide_text);
         //重置改变，防止由于复用而导致的显示问题
         viewHolder.itemView.setScrollX(0);
         tv.setText("左滑删除");

@@ -14,12 +14,13 @@ import com.gaoyy.necromreader.adapter.TechListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.TechInfo;
 import com.gaoyy.necromreader.base.BaseFragment;
+import com.gaoyy.necromreader.base.recycler.OnItemClickListener;
 import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TechFragment extends BaseFragment implements TechContract.View, SwipeRefreshLayout.OnRefreshListener, TechListAdapter.OnItemClickListener
+public class TechFragment extends BaseFragment implements TechContract.View, SwipeRefreshLayout.OnRefreshListener, OnItemClickListener
 {
     private static final String LOG_TAG = TechFragment.class.getSimpleName();
     private SwipeRefreshLayout techSwipeRefreshLayout;
@@ -151,7 +152,7 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
     @Override
     public void showTechData(List<TechInfo.ResultsBean> list)
     {
-        techListAdapter.update(list);
+        techListAdapter.updateData(list);
     }
 
     @Override
@@ -183,6 +184,6 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
     public void onItemClick(View view, int position)
     {
         TechInfo.ResultsBean tech = (TechInfo.ResultsBean) view.getTag();
-        mTechPresenter.onItemClick(getActivity(),tech);
+        mTechPresenter.onItemClick(getActivity(), tech);
     }
 }

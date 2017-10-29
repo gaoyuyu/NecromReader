@@ -12,6 +12,7 @@ import com.gaoyy.necromreader.adapter.NewsListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.NewsInfo;
 import com.gaoyy.necromreader.base.BaseLazyFragment;
+import com.gaoyy.necromreader.base.recycler.OnItemClickListener;
 import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Map;
  * Created by gaoyy on 2017/3/12 0012.
  */
 
-public class NewsFragment extends BaseLazyFragment implements NewsContract.View, NewsListAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener
+public class NewsFragment extends BaseLazyFragment implements NewsContract.View, OnItemClickListener, SwipeRefreshLayout.OnRefreshListener
 {
     private static final String LOG_TAG = NewsFragment.class.getSimpleName();
     private NewsContract.Presenter mNewsPresenter;
@@ -91,15 +92,22 @@ public class NewsFragment extends BaseLazyFragment implements NewsContract.View,
     @Override
     public void showLoading()
     {
-        newsProgressBar.setVisibility(View.VISIBLE);
-        newsSwipeRefreshLayout.setVisibility(View.GONE);
+        if (!newsSwipeRefreshLayout.isRefreshing())
+        {
+            newsProgressBar.setVisibility(View.VISIBLE);
+            newsSwipeRefreshLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void hideLoading()
     {
-        newsProgressBar.setVisibility(View.GONE);
-        newsSwipeRefreshLayout.setVisibility(View.VISIBLE);
+        if (!newsSwipeRefreshLayout.isRefreshing())
+        {
+
+            newsProgressBar.setVisibility(View.GONE);
+            newsSwipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

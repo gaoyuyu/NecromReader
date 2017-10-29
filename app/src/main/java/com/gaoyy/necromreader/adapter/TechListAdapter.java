@@ -2,17 +2,14 @@ package com.gaoyy.necromreader.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.bean.TechInfo;
+import com.gaoyy.necromreader.base.recycler.BaseViewHolder;
+import com.gaoyy.necromreader.base.recycler.RecyclerBaseAdapter;
 import com.gaoyy.necromreader.bigphoto.BigPhotoActivity;
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +22,97 @@ import java.util.List;
  * Created by gaoyy on 2017/9/25 0025.
  */
 
+public class TechListAdapter extends RecyclerBaseAdapter<TechInfo.ResultsBean>
+{
+
+    public TechListAdapter(Context context, List<TechInfo.ResultsBean> data)
+    {
+        super(context, R.layout.item_tech, data);
+    }
+
+    @Override
+    protected void bindData(BaseViewHolder holder, TechInfo.ResultsBean itemData, int position)
+    {
+        holder.getView(R.id.item_photo_cardview).setTag(itemData);
+        holder.setText(R.id.item_tech_title,itemData.getDesc());
+        holder.setText(R.id.item_tech_title,itemData.getWho());
+
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        ParsePosition pos = new ParsePosition(0);
+        Date strToDate = formatter.parse(itemData.getCreatedAt(), pos);
+        String date = formatter.format(strToDate);
+
+        holder.setText(R.id.item_tech_date,date);
+        holder.setText(R.id.item_tech_source,itemData.getSource());
+
+        final List<String> imgs = itemData.getImages();
+        LinearLayout itemTechImgLayout = holder.getView(R.id.item_tech_img_layout);
+        itemTechImgLayout.removeAllViews();
+        if (imgs == null)
+        {
+            itemTechImgLayout.setVisibility(View.GONE);
+        }
+        else
+        {
+            itemTechImgLayout.setVisibility(View.VISIBLE);
+
+            for (int i = 0; i < imgs.size(); i++)
+            {
+
+                ImageView imageView = new ImageView(mContext);
+                final int finalI = i;
+                imageView.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Intent intent = new Intent(mContext, BigPhotoActivity.class);
+                        intent.putExtra("url", imgs.get(finalI));
+                        intent.putExtra("name", "");
+                        mContext.startActivity(intent);
+                    }
+                });
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(300, 300));  //设置图片宽高
+                itemTechImgLayout.addView(imageView); //动态添加图片
+                Picasso.with(mContext)
+                        .load(imgs.get(i))
+                        .placeholder(R.mipmap.loading_bg)
+                        .error(R.mipmap.error_bg)
+                        .fit()
+                        .into(imageView);
+            }
+        }
+
+        if (onItemClickListener != null)
+        {
+            holder.getView(R.id.item_tech_cardview).setOnClickListener(new BasicOnClickListener(holder));
+        }
+    }
+
+    private class BasicOnClickListener implements View.OnClickListener
+    {
+        private BaseViewHolder vh;
+
+        public BasicOnClickListener(BaseViewHolder vh)
+        {
+            this.vh = vh;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            switch (v.getId())
+            {
+                case R.id.item_tech_cardview:
+                    onItemClickListener.onItemClick(vh.getView(R.id.item_tech_cardview), vh.getLayoutPosition());
+                    break;
+            }
+        }
+    }
+}
+
+/*
 public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
     private Context context;
@@ -183,4 +271,4 @@ public class TechListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 }
-
+*/

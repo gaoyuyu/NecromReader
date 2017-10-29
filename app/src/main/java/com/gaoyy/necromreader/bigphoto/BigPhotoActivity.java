@@ -165,10 +165,10 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
             downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
             request = new DownloadManager.Request(Uri.parse(url));
 
-            //指定在WIFI状态下，执行下载操作。
-            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-            //指定在MOBILE状态下，执行下载操作
-            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE);
+//            //指定在WIFI状态下，执行下载操作。
+//            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+//            //指定在MOBILE状态下，执行下载操作
+//            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE);
 
             request.setMimeType("image/*");
 

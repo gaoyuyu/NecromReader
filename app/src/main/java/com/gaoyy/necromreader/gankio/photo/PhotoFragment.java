@@ -9,10 +9,11 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.gaoyy.necromreader.R;
-import com.gaoyy.necromreader.adapter.PhotoListAdater;
+import com.gaoyy.necromreader.adapter.PhotoListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
 import com.gaoyy.necromreader.base.BaseFragment;
+import com.gaoyy.necromreader.base.recycler.OnItemClickListener;
 import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
@@ -22,14 +23,14 @@ import java.util.List;
  * Created by gaoyy on 2017/3/19 0019.
  */
 
-public class PhotoFragment extends BaseFragment implements PhotoContract.View, SwipeRefreshLayout.OnRefreshListener, PhotoListAdater.OnItemClickListener
+public class PhotoFragment extends BaseFragment implements PhotoContract.View, SwipeRefreshLayout.OnRefreshListener, OnItemClickListener
 {
     private SwipeRefreshLayout photoSwipeRefreshLayout;
     private RecyclerView photoRv;
     private ProgressBar photoProgressBar;
     private static final String LOG_TAG = PhotoFragment.class.getSimpleName();
     private PhotoContract.Presenter mPhotoPresenter;
-    private PhotoListAdater photoListAdater;
+    private PhotoListAdapter photoListAdater;
     private int pageNum = 1;
     private List<PhotoInfo.ResultsBean> photoList = new ArrayList<>();
     private int[] lastVisibleItem;
@@ -74,7 +75,7 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     protected void configViews()
     {
         super.configViews();
-        photoListAdater = new PhotoListAdater(activity, photoList);
+        photoListAdater = new PhotoListAdapter(activity, photoList);
         photoRv.setAdapter(photoListAdater);
 
         manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -113,7 +114,6 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
                         Log.i(Constant.TAG, "上拉加载更多 after pageNum-->" + pageNum);
                     }
                 }
-
             }
 
             @Override
@@ -121,7 +121,6 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
             {
                 super.onScrolled(recyclerView, dx, dy);
                 lastVisibleItem = manager.findLastVisibleItemPositions(null);
-
             }
         });
 
@@ -162,7 +161,7 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     @Override
     public void showPhotoData(List<PhotoInfo.ResultsBean> list)
     {
-        photoListAdater.update(list);
+        photoListAdater.updateData(list);
     }
 
     @Override

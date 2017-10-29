@@ -152,6 +152,6 @@ public class MyDownloadActivity extends BaseActivity implements SwipeRefreshLayo
             myDownloadEmptyLayout.setVisibility(View.VISIBLE);
             myDownloadSrLayout.setVisibility(View.GONE);
         }
-        downloadListAdapter.update(data);
+        downloadListAdapter.updateData(data);
     }
 }

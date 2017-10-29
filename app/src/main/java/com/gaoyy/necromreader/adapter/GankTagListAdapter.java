@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.Constant;
+import com.gaoyy.necromreader.base.recycler.TagTouchHelperViewHolder;
 import com.gaoyy.necromreader.greendao.entity.GankTag;
 import com.gaoyy.necromreader.util.CommonUtils;
 import com.gaoyy.necromreader.util.DBUtils;

@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.gaoyy.necromreader.adapter.ItemTouchHelperAdapter;
-import com.gaoyy.necromreader.adapter.TagTouchHelperViewHolder;
+import com.gaoyy.necromreader.base.recycler.TagTouchHelperViewHolder;
 
 /**
  * Created by gaoyy on 2017/10/9 0009.

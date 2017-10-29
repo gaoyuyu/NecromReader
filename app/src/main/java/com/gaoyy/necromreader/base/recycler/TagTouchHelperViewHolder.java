@@ -1,4 +1,4 @@
-package com.gaoyy.necromreader.adapter;
+package com.gaoyy.necromreader.base.recycler;
 
 /**
  * Created by gaoyy on 2017/10/14 0014.
