@@ -25,9 +25,13 @@ public class TechContract
 
         void refreshing();
 
-        void showTechData(List<TechInfo.ResultsBean> list);
+        void showTechData(List<TechInfo.ResultsBean> list, int refreshTag);
 
         boolean isActive();
+
+        void setEnableLoadMore(boolean enable);
+
+        void handleStatus(boolean isSuccess,int status);
     }
 
     interface Presenter extends BasePresenter
@@ -36,7 +40,7 @@ public class TechContract
          * @param pageNum 当前页数
          * @param type    标签类型
          */
-        void loadTechData(String type, int pageNum);
+        void loadTechData(String type, int pageNum,int refreshTag);
 
         /**
          *  item click

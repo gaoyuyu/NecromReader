@@ -9,13 +9,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.base.BaseActivity;
 import com.gaoyy.necromreader.gankio.GankFragment;
 import com.gaoyy.necromreader.gankio.GankPresenter;
 import com.gaoyy.necromreader.mydownload.MyDownloadActivity;
+import com.gaoyy.necromreader.newsdetail.NewsDetailActivity;
 import com.gaoyy.necromreader.util.ActivityUtils;
+
+import static com.gaoyy.necromreader.R.string.news;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -47,7 +52,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.configViews(savedInstanceState);
 
         mainNavView.setNavigationItemSelectedListener(this);
-
+        View root = mainNavView.getHeaderView(0);
+        final TextView tv = (TextView) root.findViewById(R.id.textView);
+        tv.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+//                CommonUtils.showToast(MainActivity.this,tv.getText()+"");
+                Intent intent = new Intent();
+                intent.putExtra("title", tv.getText());
+                intent.putExtra("url", tv.getText());
+                intent.setClass(MainActivity.this, NewsDetailActivity.class);
+                startActivity(intent);
+            }
+        });
         showDefaultFragment(savedInstanceState);
     }
 

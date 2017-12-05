@@ -9,18 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.TechListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.TechInfo;
 import com.gaoyy.necromreader.base.BaseFragment;
-import com.gaoyy.necromreader.base.recycler.OnItemClickListener;
 import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TechFragment extends BaseFragment implements TechContract.View, SwipeRefreshLayout.OnRefreshListener, OnItemClickListener
+public class TechFragment extends BaseFragment implements TechContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemClickListener
 {
     private static final String LOG_TAG = TechFragment.class.getSimpleName();
     private SwipeRefreshLayout techSwipeRefreshLayout;
@@ -31,7 +31,7 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
     private LinearLayoutManager manager;
     private TechContract.Presenter mTechPresenter;
 
-    private int pageNum = 1;
+    private int pageNum = 2;
     private int lastVisibleItem;
 
     private String tabType;
@@ -73,7 +73,7 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
     protected void configViews()
     {
         super.configViews();
-        techListAdapter = new TechListAdapter(getActivity(), techList);
+        techListAdapter = new TechListAdapter(techList);
         techRv.setAdapter(techListAdapter);
 
         manager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);
@@ -85,7 +85,7 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
 
         if (isAdded())
         {
-            mTechPresenter.loadTechData(tabType, pageNum);
+            mTechPresenter.loadTechData(tabType, pageNum,Constant.PULL_TO_REFRESH);
         }
     }
 
@@ -94,29 +94,11 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
     {
         super.setListener();
         techSwipeRefreshLayout.setOnRefreshListener(this);
-        techRv.setOnScrollListener(new RecyclerView.OnScrollListener()
-        {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-            {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == techListAdapter.getItemCount())
-                {
-                    pageNum = pageNum + 1;
-                    mTechPresenter.loadTechData(tabType, pageNum);
-                }
 
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                super.onScrolled(recyclerView, dx, dy);
-                lastVisibleItem = manager.findLastVisibleItemPosition();
-
-            }
-        });
-
+        techListAdapter.setOnLoadMoreListener(this, techRv);
+        //设置第一次加载不回凋setOnLoadMoreListener
+        techListAdapter.disableLoadMoreIfNotFullPage();
+        //设置item的点击事件
         techListAdapter.setOnItemClickListener(this);
     }
 
@@ -150,15 +132,62 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
     }
 
     @Override
-    public void showTechData(List<TechInfo.ResultsBean> list)
+    public void showTechData(List<TechInfo.ResultsBean> list,int refreshTag)
     {
-        techListAdapter.updateData(list);
+        if (refreshTag == Constant.PULL_TO_REFRESH)
+        {
+            techListAdapter.setNewData(list);
+            //当第一页数据小于page size时显示“没有更多数据”
+            if (list.size() < 10)
+            {
+                techListAdapter.loadMoreEnd(false);
+            }
+        }
+        else if (refreshTag == Constant.UP_TO_LOAD_MORE)
+        {
+            techListAdapter.addData(list);
+            techListAdapter.loadMoreComplete();
+        }
+
     }
 
     @Override
     public boolean isActive()
     {
         return isAdded();
+    }
+
+    @Override
+    public void setEnableLoadMore(boolean enable)
+    {
+        techListAdapter.setEnableLoadMore(enable);
+    }
+
+    @Override
+    public void handleStatus(boolean isSuccess, int status)
+    {
+        if (isSuccess)
+        {
+            if (status == Constant.NO_DATA)
+            {
+                techListAdapter.setEmptyView(R.layout.empty_view);
+            }
+            else if (status == Constant.NO_MORE_DATA)
+            {
+                techListAdapter.loadMoreEnd(false);
+            }
+        }
+        else
+        {
+            if (status == Constant.PULL_TO_REFRESH)
+            {
+                techListAdapter.setEmptyView(R.layout.error_view);
+            }
+            else if(status == Constant.UP_TO_LOAD_MORE)
+            {
+                techListAdapter.loadMoreFail();
+            }
+        }
     }
 
     @Override
@@ -177,13 +206,22 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
         pageNum = 1;
         techSwipeRefreshLayout.setRefreshing(true);
         Log.i(Constant.TAG, "下拉刷新pageNum-->" + pageNum);
-        mTechPresenter.loadTechData(tabType, pageNum);
+        mTechPresenter.loadTechData(tabType, pageNum,Constant.PULL_TO_REFRESH);
     }
 
     @Override
-    public void onItemClick(View view, int position)
+    public void onLoadMoreRequested()
+    {
+        Log.i(Constant.TAG, "onLoadMoreRequested");
+        pageNum = pageNum + 1;
+        mTechPresenter.loadTechData(tabType, pageNum,Constant.UP_TO_LOAD_MORE);
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position)
     {
         TechInfo.ResultsBean tech = (TechInfo.ResultsBean) view.getTag();
         mTechPresenter.onItemClick(getActivity(), tech);
     }
+
 }
