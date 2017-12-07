@@ -4,9 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
-import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.List;
@@ -33,7 +31,6 @@ public class NewsPagerAdapter extends FragmentStatePagerAdapter
     @Override
     public CharSequence getPageTitle(int position)
     {
-        Log.d(Constant.TAG,"title-->"+CommonUtils.getTypeName(newsType[position]));
         return CommonUtils.getTypeName(newsType[position]);
     }
 

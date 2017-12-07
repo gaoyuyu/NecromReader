@@ -8,12 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.PhotoListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
 import com.gaoyy.necromreader.base.BaseFragment;
-import com.gaoyy.necromreader.base.recycler.OnItemClickListener;
 import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
@@ -23,14 +23,14 @@ import java.util.List;
  * Created by gaoyy on 2017/3/19 0019.
  */
 
-public class PhotoFragment extends BaseFragment implements PhotoContract.View, SwipeRefreshLayout.OnRefreshListener, OnItemClickListener
+public class PhotoFragment extends BaseFragment implements PhotoContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemClickListener
 {
     private SwipeRefreshLayout photoSwipeRefreshLayout;
     private RecyclerView photoRv;
     private ProgressBar photoProgressBar;
     private static final String LOG_TAG = PhotoFragment.class.getSimpleName();
     private PhotoContract.Presenter mPhotoPresenter;
-    private PhotoListAdapter photoListAdater;
+    private PhotoListAdapter photoListAdapter;
     private int pageNum = 1;
     private List<PhotoInfo.ResultsBean> photoList = new ArrayList<>();
     private int[] lastVisibleItem;
@@ -75,8 +75,8 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     protected void configViews()
     {
         super.configViews();
-        photoListAdater = new PhotoListAdapter(activity, photoList);
-        photoRv.setAdapter(photoListAdater);
+        photoListAdapter = new PhotoListAdapter(photoList);
+        photoRv.setAdapter(photoListAdapter);
 
         manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         photoRv.setLayoutManager(manager);
@@ -87,7 +87,7 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
 
         if (isAdded())
         {
-            mPhotoPresenter.loadPhotoData(tabType, pageNum);
+            mPhotoPresenter.loadPhotoData(tabType, pageNum,Constant.PULL_TO_REFRESH);
         }
 
 
@@ -98,35 +98,11 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     {
         super.setListener();
         photoSwipeRefreshLayout.setOnRefreshListener(this);
-        photoRv.setOnScrollListener(new RecyclerView.OnScrollListener()
-        {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-            {
-                super.onScrollStateChanged(recyclerView, newState);
-                for (int i = 0; i < lastVisibleItem.length; i++)
-                {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem[i] + 1 == photoListAdater.getItemCount())
-                    {
-                        Log.i(Constant.TAG, "上拉加载更多 before pageNum-->" + pageNum);
-                        pageNum = pageNum + 1;
-                        mPhotoPresenter.loadPhotoData(tabType, pageNum);
-                        Log.i(Constant.TAG, "上拉加载更多 after pageNum-->" + pageNum);
-                    }
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                super.onScrolled(recyclerView, dx, dy);
-                lastVisibleItem = manager.findLastVisibleItemPositions(null);
-            }
-        });
-
-
-        photoListAdater.setOnItemClickListener(this);
-
+        photoListAdapter.setOnLoadMoreListener(this, photoRv);
+        //设置第一次加载不回凋setOnLoadMoreListener
+        photoListAdapter.disableLoadMoreIfNotFullPage();
+        //设置item的点击事件
+        photoListAdapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -159,9 +135,55 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
     }
 
     @Override
-    public void showPhotoData(List<PhotoInfo.ResultsBean> list)
+    public void showPhotoData(List<PhotoInfo.ResultsBean> list,int refreshTag)
     {
-        photoListAdater.updateData(list);
+        if (refreshTag == Constant.PULL_TO_REFRESH)
+        {
+            photoListAdapter.setNewData(list);
+            //当第一页数据小于page size时显示“没有更多数据”
+            if (list.size() < 10)
+            {
+                photoListAdapter.loadMoreEnd(false);
+            }
+        }
+        else if (refreshTag == Constant.UP_TO_LOAD_MORE)
+        {
+            photoListAdapter.addData(list);
+            photoListAdapter.loadMoreComplete();
+        }
+    }
+
+    @Override
+    public void setEnableLoadMore(boolean enable)
+    {
+        photoListAdapter.setEnableLoadMore(enable);
+    }
+
+    @Override
+    public void handleStatus(boolean isSuccess, int status)
+    {
+        if (isSuccess)
+        {
+            if (status == Constant.NO_DATA)
+            {
+                photoListAdapter.setEmptyView(R.layout.empty_view);
+            }
+            else if (status == Constant.NO_MORE_DATA)
+            {
+                photoListAdapter.loadMoreEnd(false);
+            }
+        }
+        else
+        {
+            if (status == Constant.PULL_TO_REFRESH)
+            {
+                photoListAdapter.setEmptyView(R.layout.error_view);
+            }
+            else if(status == Constant.UP_TO_LOAD_MORE)
+            {
+                photoListAdapter.loadMoreFail();
+            }
+        }
     }
 
     @Override
@@ -186,11 +208,18 @@ public class PhotoFragment extends BaseFragment implements PhotoContract.View, S
         pageNum = 1;
         photoSwipeRefreshLayout.setRefreshing(true);
         Log.i(Constant.TAG, "下拉刷新pageNum-->" + pageNum);
-        mPhotoPresenter.loadPhotoData(tabType, pageNum);
+        mPhotoPresenter.loadPhotoData(tabType, pageNum,Constant.PULL_TO_REFRESH);
     }
 
     @Override
-    public void onItemClick(View view, int position)
+    public void onLoadMoreRequested()
+    {
+        pageNum = pageNum + 1;
+        mPhotoPresenter.loadPhotoData(tabType, pageNum,Constant.UP_TO_LOAD_MORE);
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position)
     {
         PhotoInfo.ResultsBean resultsBean = (PhotoInfo.ResultsBean) view.getTag();
         mPhotoPresenter.onItemClick(activity, resultsBean);

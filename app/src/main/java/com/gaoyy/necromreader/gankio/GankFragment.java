@@ -20,8 +20,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
-import com.gaoyy.necromreader.adapter.NewsPagerAdapter;
 import com.gaoyy.necromreader.adapter.GankTagListAdapter;
+import com.gaoyy.necromreader.adapter.NewsPagerAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.base.BaseFragment;
 import com.gaoyy.necromreader.gankio.photo.PhotoFragment;
@@ -258,7 +258,7 @@ public class GankFragment extends BaseFragment implements GankContract.View, Vie
                 {
                     case R.id.item_popup_delete:
                         int tag = (int) view.getTag();
-                        DBUtils.deleteGankTagBySort(getActivity(),tag);
+                        DBUtils.deleteGankTagBySort(getActivity(), tag);
                         List<GankTag> gankTagList = DBUtils.getGankTagList(getActivity());
                         //根据sort排序，更新标签列表
 //                        Collections.sort(gankTagList);
@@ -291,10 +291,8 @@ public class GankFragment extends BaseFragment implements GankContract.View, Vie
     public void onResume()
     {
         super.onResume();
-        Log.i(LOG_TAG, "onResume");
         mGankPresenter.start();
     }
-
 
     @Override
     public boolean isActive()

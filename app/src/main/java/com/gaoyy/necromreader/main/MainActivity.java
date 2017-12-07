@@ -20,8 +20,6 @@ import com.gaoyy.necromreader.mydownload.MyDownloadActivity;
 import com.gaoyy.necromreader.newsdetail.NewsDetailActivity;
 import com.gaoyy.necromreader.util.ActivityUtils;
 
-import static com.gaoyy.necromreader.R.string.news;
-
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private DrawerLayout mainDrawerLayout;

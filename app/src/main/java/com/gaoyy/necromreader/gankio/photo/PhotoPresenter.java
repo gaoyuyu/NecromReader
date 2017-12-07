@@ -3,6 +3,7 @@ package com.gaoyy.necromreader.gankio.photo;
 import android.content.Context;
 import android.content.Intent;
 
+import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.RetrofitService;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
 import com.gaoyy.necromreader.bigphoto.BigPhotoActivity;
@@ -30,9 +31,13 @@ public class PhotoPresenter implements PhotoContract.Presenter
     }
 
     @Override
-    public void loadPhotoData(String type,final int pageNum)
+    public void loadPhotoData(String type,final int pageNum,final int refreshTag)
     {
         Call<PhotoInfo> call = RetrofitService.sGankService.getPhotosData(type,pageNum);
+        if (refreshTag == Constant.PULL_TO_REFRESH)
+        {
+            mPhotoView.setEnableLoadMore(false);
+        }
         call.enqueue(new Callback<PhotoInfo>()
         {
             @Override
@@ -44,13 +49,36 @@ public class PhotoPresenter implements PhotoContract.Presenter
                 }
                 mPhotoView.hideLoading();
                 mPhotoView.finishRefresh();
+                mPhotoView.setEnableLoadMore(true);
                 if (response.isSuccessful() && response.body() != null)
                 {
                     List<PhotoInfo.ResultsBean> list = response.body().getResults();
-                    //pageNum=1 下拉刷新，清空list，pageNum不等于1，上拉加载更多，不清空
-                    if(pageNum == 1) photoList.clear();
-                    photoList.addAll(list);
-                    mPhotoView.showPhotoData(photoList);
+                    if(refreshTag == Constant.PULL_TO_REFRESH)
+                    {
+                        if (list.size() == 0)
+                        {
+                            mPhotoView.handleStatus(true, Constant.NO_DATA);
+                        }
+                        else
+                        {
+                            mPhotoView.showPhotoData(list, refreshTag);
+                        }
+                    }
+                    else if(refreshTag == Constant.UP_TO_LOAD_MORE)
+                    {
+                        if (list.size() == 0)
+                        {
+                            mPhotoView.handleStatus(true, Constant.NO_MORE_DATA);
+                        }
+                        else
+                        {
+                            mPhotoView.showPhotoData(list, refreshTag);
+                        }
+                    }
+                }
+                else
+                {
+                    mPhotoView.handleStatus(false, refreshTag);
                 }
             }
 
@@ -63,6 +91,9 @@ public class PhotoPresenter implements PhotoContract.Presenter
                 }
                 mPhotoView.hideLoading();
                 mPhotoView.finishRefresh();
+
+                mPhotoView.setEnableLoadMore(true);
+                mPhotoView.handleStatus(false,refreshTag);
             }
         });
     }

@@ -1,80 +1,50 @@
 package com.gaoyy.necromreader.adapter;
 
-import android.content.Context;
-import android.view.View;
+import android.support.annotation.Nullable;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.api.bean.PhotoInfo;
-import com.gaoyy.necromreader.base.recycler.BaseViewHolder;
-import com.gaoyy.necromreader.base.recycler.RecyclerBaseAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by gaoyy on 2017/3/19 0019.
  */
-public class PhotoListAdapter extends RecyclerBaseAdapter<PhotoInfo.ResultsBean>
+public class PhotoListAdapter extends BaseQuickAdapter<PhotoInfo.ResultsBean, BaseViewHolder>
 {
 
-    public PhotoListAdapter(Context context, List<PhotoInfo.ResultsBean> data)
+    public PhotoListAdapter(@Nullable List<PhotoInfo.ResultsBean> data)
     {
-        super(context, R.layout.item_photo, data);
+        super(R.layout.item_photo, data);
     }
 
     @Override
-    protected void bindData(BaseViewHolder holder, PhotoInfo.ResultsBean itemData, int position)
+    protected void convert(BaseViewHolder helper, PhotoInfo.ResultsBean item)
     {
-        holder.getView(R.id.item_photo_cardview).setTag(itemData);
+        helper.getView(R.id.item_photo_cardview).setTag(item);
+        ImageView iv = helper.getView(R.id.item_photo_img);
 
-        holder.setImagePath(R.id.item_photo_img, new ImageLoader(itemData.getUrl()));
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) iv.getLayoutParams();
 
-        if (onItemClickListener != null)
-        {
-            holder.getView(R.id.item_photo_cardview).setOnClickListener(new BasicOnClickListener(holder));
-        }
+        //设置随机数
+        Random random = new Random();
+        //将高度修改为传入的随机高度
+        params.height = random.nextInt(200) + 200;
+
+        //设置修改参数
+        iv.setLayoutParams(params);
+
+        Picasso.with(mContext)
+                .load(item.getUrl())
+                .placeholder(R.mipmap.loading_bg)
+                .error(R.mipmap.error_bg)
+                .into(iv);
+
     }
-
-    public class ImageLoader extends BaseViewHolder.ImageLoaderManager
-    {
-        public ImageLoader(String path)
-        {
-            super(path);
-        }
-
-        @Override
-        public void loadImage(ImageView iv, String path)
-        {
-            //加载网络图片
-            Picasso.with(iv.getContext())
-                    .load(path)
-                    .placeholder(R.mipmap.loading_bg)
-                    .error(R.mipmap.error_bg)
-                    .fit()
-                    .into(iv);
-        }
-    }
-
-    private class BasicOnClickListener implements View.OnClickListener
-    {
-        private BaseViewHolder vh;
-
-        public BasicOnClickListener(BaseViewHolder vh)
-        {
-            this.vh = vh;
-        }
-
-        @Override
-        public void onClick(View v)
-        {
-            switch (v.getId())
-            {
-                case R.id.item_photo_cardview:
-                    onItemClickListener.onItemClick(vh.getView(R.id.item_photo_cardview), vh.getLayoutPosition());
-                    break;
-            }
-        }
-    }
-
 }

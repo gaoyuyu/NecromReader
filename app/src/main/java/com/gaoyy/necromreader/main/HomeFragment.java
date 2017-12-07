@@ -79,12 +79,12 @@ public class HomeFragment extends BaseFragment implements MainContract.View, Vie
         return fragment;
     }
 
+
     @Override
     protected void getParamsData()
     {
         super.getParamsData();
         title = getArguments().getString("title");
-        Log.d(Constant.TAG,"title-->"+title);
         List<NewTag> newTagList = DBUtils.getNewTagList(getActivity());
 
         initTabType(newTagList);
@@ -250,11 +250,11 @@ public class HomeFragment extends BaseFragment implements MainContract.View, Vie
     public void onResume()
     {
         super.onResume();
-        Log.i(LOG_TAG, "onResume");
+
         mMainPresenter.start();
         newsPagerAdapter.notifyDataSetChanged();
-    }
 
+    }
 
     @Override
     public boolean isActive()

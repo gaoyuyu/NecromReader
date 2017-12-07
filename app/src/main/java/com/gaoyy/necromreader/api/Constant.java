@@ -23,5 +23,7 @@ public class Constant
     //上拉加载无数据标识
     public static final int NO_MORE_DATA = 103;
 
+    public static final int NAV_TOP_NEW = 104;
+    public static final int NAV_GANK = 105;
 
 }

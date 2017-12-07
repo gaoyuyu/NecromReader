@@ -2,7 +2,6 @@ package com.gaoyy.necromreader.gankio.tech;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.RetrofitService;
@@ -34,7 +33,6 @@ public class TechPresenter implements TechContract.Presenter
     @Override
     public void loadTechData(String type, final int pageNum, final int refreshTag)
     {
-        Log.e(Constant.TAG,"loadTechData"+refreshTag);
         Call<TechInfo> call = RetrofitService.sGankService.getTechsData(type, pageNum);
         if (refreshTag == Constant.PULL_TO_REFRESH)
         {
@@ -45,7 +43,6 @@ public class TechPresenter implements TechContract.Presenter
             @Override
             public void onResponse(Call<TechInfo> call, Response<TechInfo> response)
             {
-                Log.e(Constant.TAG,"response");
                 if (!mTechView.isActive())
                 {
                     return;
@@ -57,7 +54,6 @@ public class TechPresenter implements TechContract.Presenter
                 {
 
                     List<TechInfo.ResultsBean> list = response.body().getResults();
-                    Log.e(Constant.TAG,"Successful"+list.size());
                     if(refreshTag == Constant.PULL_TO_REFRESH)
                     {
                         if (list.size() == 0)
@@ -83,7 +79,6 @@ public class TechPresenter implements TechContract.Presenter
                 }
                 else
                 {
-                    Log.e(Constant.TAG,"fail");
                     mTechView.handleStatus(false, refreshTag);
                 }
             }
@@ -91,7 +86,6 @@ public class TechPresenter implements TechContract.Presenter
             @Override
             public void onFailure(Call<TechInfo> call, Throwable t)
             {
-                Log.e(Constant.TAG,t.toString());
                 if (!mTechView.isActive())
                 {
                     return;
@@ -103,7 +97,6 @@ public class TechPresenter implements TechContract.Presenter
                 mTechView.handleStatus(false,refreshTag);
             }
         });
-
     }
 
     @Override

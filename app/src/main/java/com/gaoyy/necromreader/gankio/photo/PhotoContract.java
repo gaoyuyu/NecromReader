@@ -24,9 +24,13 @@ public class PhotoContract
 
         void refreshing();
 
-        void showPhotoData(List<PhotoInfo.ResultsBean> list);
+        void showPhotoData(List<PhotoInfo.ResultsBean> list, int refreshTag);
 
         boolean isActive();
+
+        void setEnableLoadMore(boolean enable);
+
+        void handleStatus(boolean isSuccess, int status);
     }
 
     interface Presenter extends BasePresenter
@@ -37,7 +41,7 @@ public class PhotoContract
          * @param pageNum 当前页数
          * @param type    标签类型
          */
-        void loadPhotoData(String type, int pageNum);
+        void loadPhotoData(String type, int pageNum, int refreshTag);
 
 
         void onItemClick(Context context, PhotoInfo.ResultsBean resultsBean);

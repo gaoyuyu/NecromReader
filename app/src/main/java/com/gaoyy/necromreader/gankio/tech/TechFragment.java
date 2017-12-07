@@ -31,7 +31,7 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
     private LinearLayoutManager manager;
     private TechContract.Presenter mTechPresenter;
 
-    private int pageNum = 2;
+    private int pageNum = 1;
     private int lastVisibleItem;
 
     private String tabType;
@@ -148,7 +148,6 @@ public class TechFragment extends BaseFragment implements TechContract.View, Swi
             techListAdapter.addData(list);
             techListAdapter.loadMoreComplete();
         }
-
     }
 
     @Override
