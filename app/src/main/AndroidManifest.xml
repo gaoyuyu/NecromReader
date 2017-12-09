@@ -27,7 +27,7 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".main.MainActivity"
-            android:theme="@style/AppTheme.WithDrawerTheme">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -36,11 +36,11 @@
         </activity>
         <activity
             android:name=".newsdetail.NewsDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            >
         </activity>
         <activity
             android:name=".bigphoto.BigPhotoActivity"
-            android:theme="@style/AppTheme.BigPhotoTheme">
+            >
         </activity>
         <activity android:name=".mydownload.MyDownloadActivity">
         </activity>

@@ -140,7 +140,7 @@ public class BigPhotoActivity extends BaseActivity implements BigPhotoContract.V
     @Override
     protected void initToolbar()
     {
-        super.initToolbar(bigToolbar, "", true, android.R.color.transparent);
+        super.initToolbar(bigToolbar, "", true, R.color.big_photo_toolbar_color);
     }
 
     @Override

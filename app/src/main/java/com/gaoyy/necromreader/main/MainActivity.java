@@ -1,6 +1,7 @@
 package com.gaoyy.necromreader.main;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gaoyy.necromreader.R;
@@ -42,6 +44,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.assignViews();
         mainDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
         mainNavView = (NavigationView) findViewById(R.id.main_nav_view);
+        //适配4.4下状态栏变色
+        LinearLayout parent = (LinearLayout) mainDrawerLayout.getParent();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            parent.setFitsSystemWindows(false);
+        }
+        else
+        {
+            parent.setFitsSystemWindows(true);
+        }
     }
 
     @Override

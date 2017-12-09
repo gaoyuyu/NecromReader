@@ -1,10 +1,20 @@
 package com.gaoyy.necromreader.base;
 
+import android.annotation.TargetApi;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.gaoyy.necromreader.R;
+import com.gaoyy.necromreader.api.Constant;
+import com.gaoyy.necromreader.main.MainActivity;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 /**
  * Created by gaoyy on 2017/3/11 0011.
@@ -19,6 +29,38 @@ public abstract class BaseActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            if (this instanceof MainActivity)
+            {
+                Log.d(Constant.TAG, "===MainActivity status bar=====");
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                getWindow().setStatusBarColor(Color.TRANSPARENT);
+            }
+            else
+            {
+                Log.d(Constant.TAG, "===not MainActivity status bar=====");
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
+        }
+        else
+        {
+            Log.d(Constant.TAG, "===api 19=====");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            {
+                setTranslucentStatus(true);
+            }
+
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.colorPrimary);
+        }
+
+
         //加载布局
         initContentView();
         //初始化view
@@ -29,6 +71,23 @@ public abstract class BaseActivity extends AppCompatActivity
         configViews(savedInstanceState);
         //设置监听器
         setListener();
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void setTranslucentStatus(boolean on)
+    {
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        if (on)
+        {
+            winParams.flags |= bits;
+        }
+        else
+        {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
     protected abstract void initContentView();
@@ -48,11 +107,10 @@ public abstract class BaseActivity extends AppCompatActivity
 
     }
 
-    protected  void setListener()
+    protected void setListener()
     {
 
     }
-    
 
 
     /**
@@ -76,9 +134,10 @@ public abstract class BaseActivity extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(enabled);
         getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
     }
+
     /**
      * @param toolbar
-     * @param title      string id
+     * @param title        string id
      * @param enabled      toolbar返回键是否可用，true-可用，false-不可用
      * @param toolbarColor toolbar背景颜色，-1为默认色
      */
