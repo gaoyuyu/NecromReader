@@ -4,15 +4,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gaoyy.necromreader.R;
 import com.gaoyy.necromreader.adapter.NewsListAdapter;
 import com.gaoyy.necromreader.api.Constant;
 import com.gaoyy.necromreader.api.bean.NewsInfo;
 import com.gaoyy.necromreader.base.BaseLazyFragment;
-import com.gaoyy.necromreader.base.recycler.OnItemClickListener;
 import com.gaoyy.necromreader.util.CommonUtils;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.Map;
  * Created by gaoyy on 2017/3/12 0012.
  */
 
-public class NewsFragment extends BaseLazyFragment implements NewsContract.View, OnItemClickListener, SwipeRefreshLayout.OnRefreshListener
+public class NewsFragment extends BaseLazyFragment implements NewsContract.View, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemClickListener
 {
     private static final String LOG_TAG = NewsFragment.class.getSimpleName();
     private NewsContract.Presenter mNewsPresenter;
@@ -33,6 +34,8 @@ public class NewsFragment extends BaseLazyFragment implements NewsContract.View,
     private ProgressBar newsProgressBar;
     private NewsListAdapter newsListAdapter;
     private List<NewsInfo.ResultBean.DataBean> list = new ArrayList<>();
+
+    private View newFooter ;
 
     @Override
     protected int getFragmentLayoutId()
@@ -71,7 +74,7 @@ public class NewsFragment extends BaseLazyFragment implements NewsContract.View,
     protected void configViews()
     {
         super.configViews();
-        newsListAdapter = new NewsListAdapter(activity, list);
+        newsListAdapter = new NewsListAdapter(list);
         newsRv.setAdapter(newsListAdapter);
         newsRv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         //设置刷新时动画的颜色
@@ -85,6 +88,12 @@ public class NewsFragment extends BaseLazyFragment implements NewsContract.View,
             map.put("key", Constant.APPKEY);
             mNewsPresenter.loadNewsData(map);
         }
+        if(newFooter == null)
+        {
+            newFooter =LayoutInflater.from(activity).inflate(R.layout.item_news_footer,null);
+        }
+        //开启列表动画
+        newsListAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         newsListAdapter.setOnItemClickListener(this);
         newsSwipeRefreshLayout.setOnRefreshListener(this);
     }
@@ -123,7 +132,9 @@ public class NewsFragment extends BaseLazyFragment implements NewsContract.View,
     @Override
     public void showNews(List<NewsInfo.ResultBean.DataBean> list)
     {
-        newsListAdapter.updateData(list);
+        newsListAdapter.setNewData(list);
+        newsListAdapter.setFooterView(newFooter);
+
     }
 
     @Override
@@ -143,18 +154,18 @@ public class NewsFragment extends BaseLazyFragment implements NewsContract.View,
     }
 
     @Override
-    public void onItemClick(View view, int ition)
-    {
-        NewsInfo.ResultBean.DataBean news = (NewsInfo.ResultBean.DataBean) view.getTag();
-        mNewsPresenter.onItemClick(activity, news);
-    }
-
-    @Override
     public void onRefresh()
     {
         Map<String, String> map = new HashMap<>();
         map.put("type", getResources().getString(getArguments().getInt("type")));
         map.put("key", Constant.APPKEY);
         mNewsPresenter.loadNewsData(map);
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position)
+    {
+        NewsInfo.ResultBean.DataBean news = (NewsInfo.ResultBean.DataBean) view.getTag();
+        mNewsPresenter.onItemClick(activity, news);
     }
 }
