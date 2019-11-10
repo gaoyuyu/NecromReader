@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     android:fitsSystemWindows="true"
-    tools:context="com.gaoyy.necromreader.bigphoto.BigPhotoActivity">
+    tools:context="com.moudle.necromreader.bigphoto.BigPhotoActivity">
 
 
     <com.bm.library.PhotoView
@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.gaoyy.necromreader.view.WaveView
+                <com.moudle.necromreader.view.WaveView
                     android:id="@+id/wave"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

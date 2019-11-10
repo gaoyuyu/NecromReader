@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="com.gaoyy.necromreader.mydownload.MyDownloadActivity">
+    tools:context="com.moudle.necromreader.mydownload.MyDownloadActivity">
 
 
     <android.support.v7.widget.Toolbar
