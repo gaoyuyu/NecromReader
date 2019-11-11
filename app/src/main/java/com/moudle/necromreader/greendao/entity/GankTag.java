@@ -3,7 +3,6 @@ package com.moudle.necromreader.greendao.entity;
 
 import java.io.Serializable;
 
-import kotlin.jvm.Transient;
 
 /**
  * Created by moudle on 2017/10/14 0014.
@@ -14,7 +13,6 @@ public class GankTag implements Serializable, Comparable<GankTag>
     private int tagId;
     private int sort;
     private String TagName;
-    @Transient
     private boolean isShowDelete = false; // not persisted
 
     public int getTagId()

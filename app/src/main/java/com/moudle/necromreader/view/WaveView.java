@@ -141,8 +141,7 @@ public class WaveView extends View implements Runnable
             throw new RuntimeException("未有设置自定义图片");
         }
 
-        int saveFlags = Canvas.MATRIX_SAVE_FLAG | Canvas.CLIP_SAVE_FLAG | Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.FULL_COLOR_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG;
-        canvas.saveLayer(0, 0, mWidth, mHeight, null, saveFlags);
+        canvas.saveLayer(0, 0, mWidth, mHeight, null, Canvas.ALL_SAVE_FLAG);
 
         drawMask(canvas);
 
