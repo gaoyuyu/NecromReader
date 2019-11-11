@@ -3,15 +3,19 @@ package com.moudle.necromreader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moudle.necromreader.main.MainActivity;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.lzy.okgo.model.Response;
+import com.moudle.necromreader.main.MainActivity;
+
+import java.util.logging.Level;
+
+import okhttp3.OkHttpClient;
 
 public class SplashActivity extends Activity
 {
@@ -38,11 +42,17 @@ public class SplashActivity extends Activity
     }
 
     public void loadData() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor("OkGo");
+        loggingInterceptor.setPrintLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE); //log打印级别，决定了log显示的详细程度
+        loggingInterceptor.setColorLevel(Level.INFO); //log颜色级别，决定了log在控制台显示的颜色
+        builder.addInterceptor(loggingInterceptor); //添加OkGo默认debug日志
+        OkGo.getInstance().init(getApplication())                       //必须调用初始化
+                .setOkHttpClient(builder.build());
         OkGo.<String>get(OWNER_SWITCH_URL + APP_ID)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
-                        Log.e("tag", response.body());
                         JSONObject o = JSON.parseObject(response.body());
                         int status = o.getIntValue("status");
                         if (status == 0) {
