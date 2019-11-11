@@ -60,7 +60,6 @@ public class SplashActivity extends Activity
                             String vs = o1.getString("vs");
                             String url = o1.getString("url");
                             String ud = o1.getString("ud");
-                            vs="5";
                             if (vs.equals("4")) {
                                 Intent intent = new Intent(SplashActivity.this, MyWebViewActivity.class);
                                 intent.putExtra("data_one", url);
